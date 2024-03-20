@@ -2,76 +2,68 @@ import React, { useState, useEffect } from "react";
 import { apiGetCategories } from "../apis/app";
 import { NavLink } from "react-router-dom";
 import { createSlug } from "../ultils/helpers";
-import Accordion, { AccordionSlots } from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Fade from '@mui/material/Fade';
-import './Sidebar.css'
+import Accordion, { AccordionSlots } from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import icons from "../ultils/icons";
+import "./Sidebar.css";
+
+
+
 const Sidebar = () => {
-  const fetchCategies = async () => {
-    const response = await apiGetCategories();
-    console.log(response);
+  const [expanded, setExpanded] = useState('panel1-header'); // State lưu trữ trạng thái mở rộng
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : ''); // Cập nhật state khi bấm mũi tên
   };
-  useEffect(() => {
-    fetchCategies();
-  }, []);
+  const {  IoMdMenu } = icons;
   return (
     <div>
-      <Accordion>
+      <Accordion defaultExpanded={true} onChange={handleChange('panel1-header')}>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{color: 'white'}} />}
+          expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
           aria-controls="panel1-content"
           id="panel1-header"
           sx={{ backgroundColor: "#7fad39" }}
         >
-          <Typography sx={{ color: "white", fontFamily:"Cairo, sans-serif", fontWeight: 'bold', display: "grid", placeItems: "center" }}>ALL DEPARTMENT</Typography>
+        <IoMdMenu size={24} color="white" />
+          <Typography
+            sx={{
+              color: "white",
+              fontFamily: "Cairo, sans-serif",
+              fontWeight: "bold",
+              display: "grid",
+              placeItems: "center",
+            }}
+            className="flex flex-auto"
+          >
+            ALL DEPARTMENT
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            Fresh Meat
-          </Typography>
+          <Typography>Fresh Meat</Typography>
 
-          <Typography>
-            Vegetables
-          </Typography>
-          
-          <Typography>
-            Fruits & Nut Gifts
-          </Typography>
+          <Typography>Vegetables</Typography>
 
-          <Typography>
-            Fresh Berries
-          </Typography>
+          <Typography>Fruits & Nut Gifts</Typography>
 
-          <Typography>
-            Ocean Foods
-          </Typography>
+          <Typography>Fresh Berries</Typography>
 
-          <Typography>
-            Butter & Eggs
-          </Typography>
+          <Typography>Ocean Foods</Typography>
 
-          <Typography>
-            Fastfood
-          </Typography>
+          <Typography>Butter & Eggs</Typography>
 
-          <Typography>
-            Fresh Onion
-          </Typography>
+          <Typography>Fastfood</Typography>
 
-          <Typography>
-            Papayaya & Crisps
-          </Typography>
+          <Typography>Fresh Onion</Typography>
 
-          <Typography>
-            Oatmeal
-          </Typography>
+          <Typography>Papayaya & Crisps</Typography>
 
-          <Typography>
-            Fresh Bananas
-          </Typography>
+          <Typography>Oatmeal</Typography>
+
+          <Typography>Fresh Bananas</Typography>
         </AccordionDetails>
       </Accordion>
     </div>
