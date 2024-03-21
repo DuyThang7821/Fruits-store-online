@@ -9,6 +9,7 @@ const Banner = () => {
         <img
           src="https://preview.colorlib.com/theme/ogani/img/hero/banner.jpg.webp"
           alt="banner"
+          className="-[500px] object-contain"
         />
         <div class="content">
         <span>FRUIT FRESH</span>
