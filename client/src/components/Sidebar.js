@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { apiGetCategories } from "../apis/app";
-import { NavLink } from "react-router-dom";
-import { createSlug } from "../ultils/helpers";
-import Accordion, { AccordionSlots } from "@mui/material/Accordion";
+import React, { useState } from "react";
+import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
@@ -10,25 +7,29 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import icons from "../ultils/icons";
 import "./Sidebar.css";
 
-
-
 const Sidebar = () => {
-  const [expanded, setExpanded] = useState('panel1-header'); // State lưu trữ trạng thái mở rộng
+  const [expanded, setExpanded] = useState("panel1-header"); // State lưu trữ trạng thái mở rộng
 
   const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : ''); // Cập nhật state khi bấm mũi tên
+    setExpanded(isExpanded ? panel : ""); // Cập nhật state khi bấm mũi tên
   };
-  const {  IoMdMenu } = icons;
+  const { IoMdMenu } = icons;
   return (
     <div>
-      <Accordion defaultExpanded={true} onChange={handleChange('panel1-header')}>
+      <Accordion
+        className="w-[300px] rounded-md "
+        defaultExpanded={true}
+        onChange={handleChange("panel1-header")}
+        sx={{ height: "100%", transition: "none" }}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
           aria-controls="panel1-content"
           id="panel1-header"
-          sx={{ backgroundColor: "#7fad39" }}
+          sx={{ backgroundColor: "#7fad39", height: "64px" }}
+          className="p-3"
         >
-        <IoMdMenu size={24} color="white" />
+          <IoMdMenu size={24} color="white" />
           <Typography
             sx={{
               color: "white",
@@ -43,27 +44,27 @@ const Sidebar = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Fresh Meat</Typography>
+          <Typography className="p-3">Fresh Meat</Typography>
 
-          <Typography>Vegetables</Typography>
+          <Typography className="p-3">Vegetables</Typography>
 
-          <Typography>Fruits & Nut Gifts</Typography>
+          <Typography className="p-3">Fruits & Nut Gifts</Typography>
 
-          <Typography>Fresh Berries</Typography>
+          <Typography className="p-3">Fresh Berries</Typography>
 
-          <Typography>Ocean Foods</Typography>
+          <Typography className="p-3">Ocean Foods</Typography>
 
-          <Typography>Butter & Eggs</Typography>
+          <Typography className="p-3">Butter & Eggs</Typography>
 
-          <Typography>Fastfood</Typography>
+          <Typography className="p-3">Fastfood</Typography>
 
-          <Typography>Fresh Onion</Typography>
+          <Typography className="p-3">Fresh Onion</Typography>
 
-          <Typography>Papayaya & Crisps</Typography>
+          <Typography className="p-3">Papayaya & Crisps</Typography>
 
-          <Typography>Oatmeal</Typography>
+          <Typography className="p-3">Oatmeal</Typography>
 
-          <Typography>Fresh Bananas</Typography>
+          <Typography className="p-3">Fresh Bananas</Typography>
         </AccordionDetails>
       </Accordion>
     </div>
