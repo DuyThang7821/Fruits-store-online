@@ -29,10 +29,10 @@ return (
 
 
         <div className="flex items-center justify-center px-6 border-r">
-            <FaHeart size={24} color="#ee3131" />
+            <FaHeart size={24} color="#000" />
         </div>
         <div className="flex items-center justify-center gap-2 px-6 border-r">
-            <BsHandbagFill color="#ee3131" size={24} />
+            <BsHandbagFill color="#000" size={24} />
             <span>0 items</span>
         </div>
         <div className="flex items-center justify-center px-6 border-r">
