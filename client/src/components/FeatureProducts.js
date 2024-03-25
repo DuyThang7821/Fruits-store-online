@@ -62,7 +62,7 @@ const FeatureProducts = () => {
 
   <div className="flex flex-col items-center justify-center p-2">
     <img
-      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
+      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-2.jpg.webp"
       alt="img1"
     />
     <div className="flex flex-col items-center">
@@ -75,7 +75,7 @@ const FeatureProducts = () => {
 
   <div className="flex flex-col items-center justify-center p-2">
     <img
-      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
+      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-3.jpg.webp"
       alt="img1"
     />
     <div className="flex flex-col items-center">
@@ -88,7 +88,7 @@ const FeatureProducts = () => {
 
   <div className="flex flex-col items-center justify-center p-2">
     <img
-      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
+      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-6.jpg.webp"
       alt="img1"
     />
     <div className="flex flex-col items-center">
@@ -101,7 +101,7 @@ const FeatureProducts = () => {
 
   <div className="flex flex-col items-center justify-center p-2">
     <img
-      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
+      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-7.jpg.webp"
       alt="img1"
     />
     <div className="flex flex-col items-center">
@@ -114,7 +114,7 @@ const FeatureProducts = () => {
 
   <div className="flex flex-col items-center justify-center p-2">
     <img
-      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
+      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-4.jpg.webp"
       alt="img1"
     />
     <div className="flex flex-col items-center">
@@ -127,7 +127,7 @@ const FeatureProducts = () => {
 
   <div className="flex flex-col items-center justify-center p-2">
     <img
-      src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
+      src="https://preview.colorlib.com/theme/ogani/img/categories/cat-1.jpg.webp"
       alt="img1"
     />
     <div className="flex flex-col items-center">

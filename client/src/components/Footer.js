@@ -1,8 +1,8 @@
 import React from "react";
 import logo from "../assets/logo.png.webp";
 import icons from "../ultils/icons";
-import { Navigation } from "react-router-dom"; 
-const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle, FaHeart } = icons;
+
+const {  FaHeart } = icons;
 const Footer = () => {
   return (
     <div>
@@ -95,7 +95,7 @@ const Footer = () => {
         </div>
 
         <div>
-            <img src="https://preview.colorlib.com/theme/ogani/img/payment-item.png.webp" />
+            <img src="https://preview.colorlib.com/theme/ogani/img/payment-item.png.webp" alt="" />
         </div>
       </div>
     </div>

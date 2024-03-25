@@ -46,15 +46,6 @@ const HotProduct = () => {
     });
   };
 
-  // useEffect(() => {
-  //   const autoSlideInterval = setInterval(() => {
-  //     handleNext();
-  //   }, 3000);
-
-  //   return () => {
-  //     clearInterval(autoSlideInterval);
-  //   };
-  // }, [currentIndex]);
   return (
     <div className="mb-10 w-full flex flex-auto justify-between">
       <div className="overflow-hidden">

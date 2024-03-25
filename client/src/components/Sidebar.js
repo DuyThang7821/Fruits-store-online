@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -6,8 +6,29 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import icons from "../ultils/icons";
 import "./Sidebar.css";
-
+import { apiGetCategories } from "../apis/app";
+import { NavLink } from "react-router-dom";
+import { createSlug } from '../ultils/helpers'
 const Sidebar = () => {
+  const [categories, setCategories] = useState([]);
+
+  const fetchCategories = async () => {
+    const response = await apiGetCategories();
+    if (response.success && response.data) {
+      setCategories(response.data);
+    } else {
+      console.log('api error');
+      console.log(response); // Log response để debug
+    }
+  };
+  
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  
+  console.log(categories); // Log categories sau khi cập nhật
+  
+ 
   const [expanded, setExpanded] = useState("panel1-header"); // State lưu trữ trạng thái mở rộng
 
   const handleChange = (panel) => (event, isExpanded) => {
