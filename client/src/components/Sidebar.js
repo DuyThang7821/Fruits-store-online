@@ -5,7 +5,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import icons from "../ultils/icons";
-import "./Sidebar.css";
+
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState("panel1-header"); // State lưu trữ trạng thái mở rộng

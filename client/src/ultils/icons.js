@@ -4,7 +4,7 @@ import {BsHandbagFill} from 'react-icons/bs';
 import {FaUserCircle, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
 import { FaHeart } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
-import { GrFormPrevious } from "react-icons/gr";
+import { GrFormPrevious, GrView } from "react-icons/gr";
 import { FaFacebook } from "react-icons/fa6";
 const icons = {
     RiPhoneFill,
@@ -17,6 +17,7 @@ const icons = {
     GrFormPrevious,
     FaFacebook,
     FaTwitter,
-    FaLinkedinIn
+    FaLinkedinIn,
+    GrView
 }
 export default icons
