@@ -7,7 +7,7 @@ import {
 } from "../../components/";
 import Slider from "react-slick";
 import { RiArrowDropDownLine } from "react-icons/ri";
-
+import { RiPhoneFill } from "react-icons/ri";
 var settings = {
   dots: false,
   infinite: true,
@@ -27,19 +27,35 @@ const Home = () => {
 
         <div className="flex flex-col gap-5 pl-10 w-[75%] flex-auto">
           <form className="flex">
-            <div className="w-[200px] h-[50px] border flex items-center justify-center">
+            <div className="w-[170px] h-[50px] border flex items-center justify-center">
               <span className="p-2">All Categories</span>
-              <RiArrowDropDownLine size={24} cursor='pointer' />
+              <RiArrowDropDownLine size={24} cursor="pointer" />
             </div>
-            <input className="w-[410px] h-[50px] border" />
+            <input
+              className="w-[350px] h-[50px] border p-2"
+              placeholder="What do you need ?"
+            />
             <button
-              className="font-bold w-[100px] h-[50px] bg-[#7fad39] text-white px-4 py-2"
+              className="font-bold w-[100px] h-[50px] bg-[#7fad39] text-white px-4 py-2 mr-5"
               type="submit"
             >
               SEARCH
             </button>
-          </form>
 
+            <div class="flex items-center p-2">
+              <div class="px-2">
+                <RiPhoneFill
+                  color="#7fad39"
+                  size={24}
+                  class="border rounded-full bg-gray-200 flex items-center w-12 h-[50px] justify-center px-3 -mt-2 mr-5"
+                />
+              </div>
+              <div>
+                <h5 className="font-bold text-[20px] -mt-2">0826257475</h5>
+                <span className="text-gray-500">Support 24/7 time</span>
+              </div>
+            </div>
+          </form>
           <Banner />
         </div>
       </div>
