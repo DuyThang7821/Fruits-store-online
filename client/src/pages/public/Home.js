@@ -4,6 +4,8 @@ import {
   Banner,
   FeatureProducts,
   HotProduct,
+  Blogs,
+  Footer
 } from "../../components/";
 import Slider from "react-slick";
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -154,7 +156,11 @@ const Home = () => {
       <div className="w-main mt-8">
         <HotProduct />
       </div>
-      <div className="w-full h-[500px]"></div>
+
+      <div className="w-main mt-8">
+        <Blogs />
+      </div>
+
     </div>
   );
 };
