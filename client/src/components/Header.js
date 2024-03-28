@@ -35,6 +35,7 @@ const Header = () => {
         </a>
       </div>
 
+
       <div className="flex text-[13px] ">
         <div class="flex items-center justify-center ">
           <FaHeart size={24} />
