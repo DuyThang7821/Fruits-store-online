@@ -1,3 +1,5 @@
+import { mes, regex } from '../ultils/constants';
+
 export const validate = (payload, setInvalidFields) => {
     let invalids = 0;
 
@@ -5,23 +7,23 @@ export const validate = (payload, setInvalidFields) => {
         invalids++;
         setInvalidFields((prev) => [
             ...prev,
-            { name: "email", message: "Email is required" },
-            { name: "password", message: "Password is required" },
+            { name: "email", message: mes.emailRequired },
+            { name: "password", message: mes.passwordRequired },
         ]);
     } else {
-        if (!payload.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+        if (!payload.email.match(regex.email)) {
             invalids++;
             setInvalidFields((prev) => [
                 ...prev,
-                { name: "email", message: "Invalid email format" },
+                { name: "email", message: mes.invalidEmailFormat },
             ]);
         }
 
-        if (payload.password.length < 6) {
+        if (!regex.passwordLength.test(payload.password)) {
             invalids++;
             setInvalidFields((prev) => [
                 ...prev,
-                { name: "password", message: "Password needs at least 6 characters" },
+                { name: "password", message: mes.passwordLength },
             ]);
         }
     }

@@ -3,7 +3,7 @@ import logo from "../assets/logo.png.webp";
 import icons from "../ultils/icons";
 import { Link } from "react-router-dom";
 import path from "../ultils/path";
-const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle, FaHeart } = icons;
+const { BsHandbagFill,  FaHeart } = icons;
 const Header = () => {
   return (
     <div className=" w-main flex justify-between h-[127px] py-[35px]">
@@ -18,21 +18,21 @@ const Header = () => {
       </div>
 
       <div class="flex justify-between items-center pl-5  space-x-10">
-        <a className="font-bold" href="http://localhost:3000/">
+        <Link className="font-bold" to={path.HOME}>
           HOME
-        </a>
-        <a className="font-bold" href="http://localhost:3000/">
+        </Link>
+        <Link className="font-bold" to={path.SHOPS}>
           SHOP
-        </a>
-        <a className="font-bold" href="http://localhost:3000/">
+        </Link>
+        <Link className="font-bold" to={path.PAGES}>
           PAGES
-        </a>
-        <a className="font-bold" href="http://localhost:3000/">
+        </Link>
+        <Link className="font-bold" to={path.BLOGS}>
           BLOGS
-        </a>
-        <a className="font-bold" href="http://localhost:3000/">
+        </Link>
+        <Link className="font-bold" to={path.CONTACTS}>
           CONTACT
-        </a>
+        </Link>
       </div>
 
       <div className="flex text-[13px] ">
