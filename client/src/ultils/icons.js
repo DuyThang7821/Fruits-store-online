@@ -6,6 +6,7 @@ import { FaHeart } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
 import { GrFormPrevious, GrView } from "react-icons/gr";
 import { FaFacebook } from "react-icons/fa6";
+import { IoLogOut } from "react-icons/io5";
 const icons = {
     RiPhoneFill,
     MdEmail,
@@ -18,6 +19,7 @@ const icons = {
     FaFacebook,
     FaTwitter,
     FaLinkedinIn,
-    GrView
+    GrView,
+    IoLogOut
 }
 export default icons
