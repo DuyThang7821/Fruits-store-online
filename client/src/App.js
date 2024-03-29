@@ -4,8 +4,10 @@ import {Home, Public} from './pages/public';
 import path from './ultils/path';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   return (
+    
     <div className="min-h-screen font-main">
         <Routes>
           <Route path={path.PUBLIC} element={<Public />}>
