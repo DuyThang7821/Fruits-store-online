@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import icons from "../ultils/icons";
 import FormLogin from "./Modal/FormLogin";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +23,7 @@ const TopHeader = () => {
         <div className="flex items-center">
           <MdEmail />
           <span className="text-14 flex items-center border-r border-gray-300 px-2">
-            {loggedInEmail ? loggedInEmail : "Thang@gmail.com"}
+            Support24/7@gmail.com
           </span>
           <span className="px-2"></span>
           <span className="text-gray-500 text-14">
