@@ -7,6 +7,9 @@ import { validate } from "../../ultils/helpers";
 import { login } from "../../store/user/userSlice";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
+import FormRegister from "./FormRegister";
+import { Link } from "react-router-dom";
+
 const FormLogin = ({ show, handleCloseModal, handleSetLoggedInEmail }) => {
   const dispatch = useDispatch(); 
   const [data, setData] = useState({
@@ -14,6 +17,8 @@ const FormLogin = ({ show, handleCloseModal, handleSetLoggedInEmail }) => {
     password: "",
   });
   const [invalidFields, setInvalidFields] = useState([]);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+
   const handleOnclickInputChange = (event) => {
     const { name, value } = event.target;
     setData({ ...data, [name]: value });
@@ -22,8 +27,8 @@ const FormLogin = ({ show, handleCloseModal, handleSetLoggedInEmail }) => {
 
   const handleLoginClick = () => {
     setInvalidFields([]);
-    const errors = validate(data, setInvalidFields);
-    if (errors === 0) {
+    const isValid = validate(data, setInvalidFields, true);
+    if (isValid) {
       apiLogin(data)
         .then((res) => {
           Swal.fire({
@@ -34,23 +39,38 @@ const FormLogin = ({ show, handleCloseModal, handleSetLoggedInEmail }) => {
           handleSetLoggedInEmail(res.data.account.email);
           handleCloseModal();
           localStorage.setItem("loggedInUser", JSON.stringify(res.data.account));
+          setData({
+            email: "",
+            password: "",
+          });
         })
         .catch((error) => {
-            toast.error('Login Error', error)
+            toast.error('Username or password incorrect', error)
         });
     }
   };
+  
+  
+
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser');
     if (loggedInUser) {
         dispatch(login(JSON.parse(loggedInUser)));
     }
-}, []);
+  }, []);
+
+  const handleCreateAccountClick = () => {
+    setShowRegisterModal(true);
+  };
+
+  const handleCloseRegisterModal = () => {
+    setShowRegisterModal(false);
+  };
 
   return (
     <div>
       <Modal
-        open={show}
+        open={show && !showRegisterModal}
         onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -90,7 +110,6 @@ const FormLogin = ({ show, handleCloseModal, handleSetLoggedInEmail }) => {
                 value={data.email}
                 onChange={handleOnclickInputChange}
                 required
-
               />
               {invalidFields.map(
                 (field, index) =>
@@ -131,16 +150,30 @@ const FormLogin = ({ show, handleCloseModal, handleSetLoggedInEmail }) => {
           </form>
 
           <div className="flex justify-between">
-            <a
+            <Link
               className="text-blue-500 font-semibold mb-20"
               href="http://localhost:3000/"
             >
               Go home
-            </a>
-            <a className="text-blue-500 font-semibold mb-20" href="register">
+            </Link>
+            <button
+              className="text-blue-500 font-semibold mb-20"
+              onClick={handleCreateAccountClick}
+            >
               Create account
-            </a>
+            </button>
           </div>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={showRegisterModal && show}
+        onClose={handleCloseRegisterModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box>
+          <FormRegister />
         </Box>
       </Modal>
     </div>
