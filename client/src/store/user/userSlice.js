@@ -6,7 +6,7 @@ export const userSlice = createSlice({
     isLoggedIn: false,
     email: "",
     token: null,
-    mes: "",
+    message: "",
   },
   reducers: {
     login: (state, action) => {
