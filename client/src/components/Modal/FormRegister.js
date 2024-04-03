@@ -7,9 +7,7 @@ import { apiRegister } from "../../apis/user";
 import { toast } from "react-toastify";
 import { message } from "../../ultils/constants";
 
-const FormRegister = () => {
-  const [open, setOpen] = React.useState(true);
-  const handleClose = () => setOpen(false);
+const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
   const [invalidFields, setInvalidFields] = useState([]);
   const [data, setData] = useState({
     firstName: "",
@@ -18,7 +16,7 @@ const FormRegister = () => {
     phone: "",
     password: "",
     confirmPassword: "",
-    role: "admin",
+    role: "customer",
     isActive: true,
   });
 
@@ -27,29 +25,34 @@ const FormRegister = () => {
     setData({ ...data, [name]: value });
     setInvalidFields((prev) => prev.filter((field) => field.name !== name));
   };
-
+  const resetData = () => {
+    setData({
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      confirmPassword: "",
+      role: "customer",
+      isActive: true,
+    });
+  };
   const handleRegisterClick = () => {
     setInvalidFields([]);
     if (data.password !== data.confirmPassword) {
-      setInvalidFields(prev => [...prev, { name: "confirmPassword", message: message.comparePassword }]);
+      setInvalidFields((prev) => [
+        ...prev,
+        { name: "confirmPassword", message: message.comparePassword },
+      ]);
       toast.error(message.comparePassword);
-      return; 
+      return;
     }
-    const isValid = validate(data, setInvalidFields, false); 
+    const isValid = validate(data, setInvalidFields, false);
     if (isValid) {
       apiRegister(data)
         .then(() => {
           toast.success("Register successful");
-          setData({
-            firstName: "",
-            lastName: "",
-            email: "",
-            phone: "",
-            password: "",
-            confirmPassword: "",
-            role: "admin",
-            isActive: true,
-          });
+          resetData(data);
         })
         .catch((error) => {
           toast.error(
@@ -57,15 +60,16 @@ const FormRegister = () => {
             error.response ? error.response.data.message : "Unknown error"
           );
         });
+    } else {
+      toast.error("Please check your input and try again.");
     }
   };
-  
 
   return (
     <div>
       <Modal
-        open={open}
-        onClose={handleClose}
+        open={show}
+        onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -76,7 +80,7 @@ const FormRegister = () => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 557,
-            height: 720,
+            height: 780,
             maxWidth: "90vw",
             maxHeight: "100vh",
             bgcolor: "background.paper",
@@ -90,7 +94,7 @@ const FormRegister = () => {
           }}
         >
           <span
-            className="text-[#7fad39] font-bold text-4xl mt-5"
+            className="text-[#7fad39] font-bold text-4xl mt-10"
             id="modal-modal-title"
             variant="h6"
             component="h2"
@@ -99,12 +103,19 @@ const FormRegister = () => {
           </span>
 
           <form className="mt-10" style={{ width: "100%" }}>
-            <div className="mb-5 flex gap-2">
+            <div className="mb-2 flex gap-2">
               <div className="flex flex-col flex-1">
+                <label
+                  htmlFor="firstName"
+                  className="mb-2 text-sm font-medium text-gray-900"
+                >
+                  First Name
+                </label>
                 <input
                   className="border-gray-300 border focus:outline-none h-[51px] rounded-md p-2"
                   placeholder="First Name"
                   type="text"
+                  id="firstName"
                   name="firstName"
                   required
                   value={data.firstName}
@@ -121,6 +132,12 @@ const FormRegister = () => {
               </div>
 
               <div className="flex flex-col flex-1 px-2">
+                <label
+                  htmlFor="lastName"
+                  className="mb-2 text-sm font-medium text-gray-900"
+                >
+                  Last Name
+                </label>
                 <input
                   className="border-gray-300 border focus:outline-none h-[51px] rounded-md p-2"
                   placeholder="Last Name"
@@ -141,7 +158,13 @@ const FormRegister = () => {
               </div>
             </div>
 
-            <div className="mb-5">
+            <div className="mb-2">
+              <label
+                htmlFor="email"
+                className="mb-2 text-sm font-medium text-gray-900"
+              >
+                Email
+              </label>
               <input
                 className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
                 placeholder="Email"
@@ -161,7 +184,13 @@ const FormRegister = () => {
               )}
             </div>
 
-            <div className="mb-5">
+            <div className="mb-2">
+              <label
+                htmlFor="phone"
+                className="mb-2 text-sm font-medium text-gray-900"
+              >
+                Phone Number
+              </label>
               <input
                 className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
                 placeholder="Phone Number"
@@ -180,7 +209,13 @@ const FormRegister = () => {
                   )
               )}
             </div>
-            <div className="mb-5">
+            <div className="mb-2">
+              <label
+                htmlFor="password"
+                className="mb-2 text-sm font-medium text-gray-900"
+              >
+                Password
+              </label>
               <input
                 className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
                 placeholder="Password"
@@ -200,7 +235,13 @@ const FormRegister = () => {
               )}
             </div>
 
-            <div className="mb-5">
+            <div className="mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="mb-2 text-sm font-medium text-gray-900"
+              >
+                Confirm Password
+              </label>
               <input
                 className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
                 placeholder="Confirm Password"
@@ -222,7 +263,7 @@ const FormRegister = () => {
 
             <button
               type="button"
-              className="w-[483px] h-[39px] bg-[#7fad39] text-white mb-8 rounded-md text-lg"
+              className="w-[483px] h-[39px] bg-[#7fad39] text-white mb-2 rounded-md text-lg"
               onClick={handleRegisterClick}
             >
               Register
@@ -235,7 +276,10 @@ const FormRegister = () => {
               >
                 Go home
               </Link>
-              <button className="text-blue-500 font-semibold mb-10 px-2">
+              <button
+                className="text-blue-500 font-semibold mb-10 px-2"
+                onClick={handleOpenLoginModal}
+              >
                 Go to Login
               </button>
             </div>
