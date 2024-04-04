@@ -51,9 +51,6 @@ const TopHeader = () => {
       })
       .catch(() => {
         toast.error("An error occurred while logging out.");
-        dispatch(logout());
-        localStorage.removeItem("loggedInUser");
-        setIsShowOption(false);
       });
   };
 
@@ -101,7 +98,7 @@ const TopHeader = () => {
                       onClick={handleLogout}
                       className="w-full p-2 hover:bg-sky-500 cursor-pointer"
                     >
-                      Đăng xuất
+                      Log out
                     </span>
                   </div>
                 )}

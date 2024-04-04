@@ -13,7 +13,6 @@ const FormLogin = ({
   show,
   handleCloseModal,
   handleOpenRegisterModal,
-  handleSetLoggedInEmail,
 }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState({
@@ -37,14 +36,14 @@ const FormLogin = ({
     if (isValid) {
       apiLogin(data)
         .then((res) => {
-          const accountInfo = {
-            isLoggedIn: true,
-            email: res.data.account.email,
-            tokens: res.data.tokens,
-          };
-  
-          dispatch(login(accountInfo));
-  
+          dispatch(
+            login({
+              isLoggedIn: true,
+              email: res.data.account.email,
+              tokens: res.data.tokens,
+            })
+          );
+
           localStorage.setItem(
             "loggedInUser",
             JSON.stringify({
@@ -52,10 +51,10 @@ const FormLogin = ({
               tokens: res.data.tokens,
             })
           );
-  
+
           handleCloseModal();
           resetData(data);
-  
+
           Swal.fire({
             icon: "success",
             title: "Logged in successfully!",
@@ -67,21 +66,6 @@ const FormLogin = ({
         });
     }
   };
-  
-  
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      const parsedUser = JSON.parse(loggedInUser);
-      dispatch(login({
-        isLoggedIn: true,
-        email: parsedUser.email,
-        tokens: parsedUser.tokens, 
-      }));
-    }
-  }, []);
-  
-
   return (
     <div>
       <Modal
