@@ -5,17 +5,22 @@ export const userSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     email: "",
-    token: null,
+    tokens: null,
     message: "",
   },
   reducers: {
     login: (state, action) => {
       state.isLoggedIn = action.payload.isLoggedIn;
       state.email = action.payload.email;
-      state.token = action.payload.token;
+      state.tokens = action.payload.tokens;
+    },
+    logout: (state) => {
+      state.isLoggedIn = false;
+      state.email = "";
+      state.tokens = null;
     },
   },
 });
 
-export const { login  } = userSlice.actions;
+export const { login, logout  } = userSlice.actions;
 export default userSlice.reducer;

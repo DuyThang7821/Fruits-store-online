@@ -37,30 +37,50 @@ const FormLogin = ({
     if (isValid) {
       apiLogin(data)
         .then((res) => {
+          const accountInfo = {
+            isLoggedIn: true,
+            email: res.data.account.email,
+            tokens: res.data.tokens,
+          };
+  
+          dispatch(login(accountInfo));
+  
+          localStorage.setItem(
+            "loggedInUser",
+            JSON.stringify({
+              ...res.data.account,
+              tokens: res.data.tokens,
+            })
+          );
+  
+          handleCloseModal();
+          resetData(data);
+  
           Swal.fire({
             icon: "success",
             title: "Logged in successfully!",
             text: `Logged in as ${res.data.account.email}`,
           });
-          handleSetLoggedInEmail(res.data.account.email);
-          handleCloseModal();
-          localStorage.setItem(
-            "loggedInUser",
-            JSON.stringify(res.data.account)
-          );
-          resetData(data);
         })
         .catch((error) => {
           toast.error("Username or password incorrect", error);
         });
     }
-};
+  };
+  
+  
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (loggedInUser) {
-      dispatch(login(JSON.parse(loggedInUser)));
+      const parsedUser = JSON.parse(loggedInUser);
+      dispatch(login({
+        isLoggedIn: true,
+        email: parsedUser.email,
+        tokens: parsedUser.tokens, 
+      }));
     }
   }, []);
+  
 
   return (
     <div>
@@ -85,7 +105,6 @@ const FormLogin = ({
             borderRadius: 2,
             outline: "none",
           }}
-          
         >
           <span
             className="text-[#7fad39] font-bold text-4xl  flex justify-center"

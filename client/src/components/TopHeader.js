@@ -1,9 +1,11 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import icons from "../ultils/icons";
 import FormLogin from "./Modal/FormLogin";
 import FormRegister from "./Modal/FormRegister";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/user/userSlice";
+import { login, logout } from "../store/user/userSlice";
+import { toast } from "react-toastify";
+import { apiLogout } from "../apis/user";
 
 const { MdEmail, FaFacebook, FaLinkedinIn, FaTwitter, FaUserCircle } = icons;
 
@@ -12,10 +14,9 @@ const TopHeader = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const loggedInEmail = useSelector((state) => state.user.email);
-
+  const [isShowOption, setIsShowOption] = useState(false);
   const handleSetLoggedInEmail = (email) => {
     dispatch(login({ isLoggedIn: true, email }));
-    // save email in localStorage
     localStorage.setItem("loggedInUser", email);
   };
   const handleOpenLoginModal = () => setShowLoginModal(true);
@@ -29,6 +30,31 @@ const TopHeader = () => {
   const handleCloseRegisterModal = () => {
     setShowRegisterModal(false);
     setShowLoginModal(true);
+  };
+  useEffect(() => {
+    const handleClickoutOptions = (e) => {
+      const profile = document.getElementById("profile");
+      if (!profile?.contains(e.target)) setIsShowOption(false);
+    };
+    document.addEventListener("click", handleClickoutOptions);
+    return () => {
+      document.removeEventListener("click", handleClickoutOptions);
+    };
+  }, []);
+  const handleLogout = () => {
+    apiLogout()
+      .then(() => {
+        dispatch(logout());
+        localStorage.removeItem("loggedInUser");
+        setIsShowOption(false);
+        toast.success("Logged out successfully!");
+      })
+      .catch(() => {
+        toast.error("An error occurred while logging out.");
+        dispatch(logout());
+        localStorage.removeItem("loggedInUser");
+        setIsShowOption(false);
+      });
   };
 
   return (
@@ -55,16 +81,39 @@ const TopHeader = () => {
                 style={{ right: "-10px" }}
               ></span>
             </span>
-            <FaUserCircle
-              className="ml-8 mr-2 hover:text-white hover:bg-[#7fad39] bg-white rounded-full cursor-pointer"
-              size={16}
-            />
-            <span
-              className="cursor-pointer hover:text-[#7fad39]"
-              onClick={handleOpenLoginModal}
-            >
-              {loggedInEmail ? loggedInEmail : "Login"}
-            </span>
+
+            {loggedInEmail ? (
+              <div
+                id="profile"
+                onClick={() => setIsShowOption((prev) => !prev)}
+                className="flex items-center cursor-pointer justify-center px-6 gap-2 relative rounded-md"
+              >
+                <FaUserCircle size={16} />
+                <span className="cursor-pointer hover:text-[#7fad39]">
+                  {loggedInEmail}
+                </span>
+                {isShowOption && (
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="rounded-md flex-col flex  absolute top-full  bg-gray-100 border min-w-[150px] text-center"
+                  >
+                    <span
+                      onClick={handleLogout}
+                      className="w-full p-2 hover:bg-sky-500 cursor-pointer"
+                    >
+                      Đăng xuất
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <span
+                className="cursor-pointer hover:text-[#7fad39] pl-5"
+                onClick={handleOpenLoginModal}
+              >
+                Login
+              </span>
+            )}
             <FormLogin
               show={showLoginModal}
               handleCloseModal={handleCloseLoginModal}
