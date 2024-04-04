@@ -9,9 +9,9 @@ import { FiMessageCircle } from "react-icons/fi";
 const Blogs = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="border-b-4  border-[#7fad39] flex items-center mb-10">
         <h3 className="text-[36px] font-bold pt-10 mx-4">From the Blog</h3>
-      </div>
+        <div class="border-b-4 border-[#7fad39] w-20 mx-auto mb-10"></div>
+
 
       <div className="flex">
         <Card sx={{ maxWidth: 360 }} className="mr-5">

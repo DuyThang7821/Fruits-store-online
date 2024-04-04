@@ -1,15 +1,66 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import icons from "../ultils/icons";
+import FormLogin from "./Modal/FormLogin";
+import FormRegister from "./Modal/FormRegister";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout } from "../store/user/userSlice";
+import { toast } from "react-toastify";
+import { apiLogout } from "../apis/user";
 
 const { MdEmail, FaFacebook, FaLinkedinIn, FaTwitter, FaUserCircle } = icons;
+
 const TopHeader = () => {
+  const dispatch = useDispatch();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const loggedInEmail = useSelector((state) => state.user.email);
+  const [isShowOption, setIsShowOption] = useState(false);
+  const handleSetLoggedInEmail = (email) => {
+    dispatch(login({ isLoggedIn: true, email }));
+    localStorage.setItem("loggedInUser", email);
+  };
+  const handleOpenLoginModal = () => setShowLoginModal(true);
+  const handleCloseLoginModal = () => setShowLoginModal(false);
+
+  const handleOpenRegisterModal = () => {
+    setShowLoginModal(false);
+    setShowRegisterModal(true);
+  };
+
+  const handleCloseRegisterModal = () => {
+    setShowRegisterModal(false);
+    setShowLoginModal(true);
+  };
+  useEffect(() => {
+    const handleClickoutOptions = (e) => {
+      const profile = document.getElementById("profile");
+      if (!profile?.contains(e.target)) setIsShowOption(false);
+    };
+    document.addEventListener("click", handleClickoutOptions);
+    return () => {
+      document.removeEventListener("click", handleClickoutOptions);
+    };
+  }, []);
+  const handleLogout = () => {
+    apiLogout()
+      .then(() => {
+        dispatch(logout());
+        localStorage.removeItem("loggedInUser");
+        setIsShowOption(false);
+        toast.success("Logged out successfully!");
+      })
+      .catch(() => {
+        toast.error("An error occurred while logging out.");
+      });
+  };
+
   return (
     <div className="flex items-center justify-center h-[47px] w-full bg-[#f5f5f5]">
       <div className="w-main flex items-center justify-between">
         <div className="flex items-center">
           <MdEmail />
           <span className="text-14 flex items-center border-r border-gray-300 px-2">
-            Thang@gmail.com
+            Support24/7@gmail.com
           </span>
           <span className="px-2"></span>
           <span className="text-gray-500 text-14">
@@ -27,8 +78,50 @@ const TopHeader = () => {
                 style={{ right: "-10px" }}
               ></span>
             </span>
-            <FaUserCircle className="ml-8 mr-2" size={16} />
-            <span>Login</span>
+
+            {loggedInEmail ? (
+              <div
+                id="profile"
+                onClick={() => setIsShowOption((prev) => !prev)}
+                className="flex items-center cursor-pointer justify-center px-6 gap-2 relative rounded-md"
+              >
+                <FaUserCircle size={16} />
+                <span className="cursor-pointer hover:text-[#7fad39]">
+                  {loggedInEmail}
+                </span>
+                {isShowOption && (
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="rounded-md flex-col flex  absolute top-full  bg-gray-100 border min-w-[150px] text-center"
+                  >
+                    <span
+                      onClick={handleLogout}
+                      className="w-full p-2 hover:bg-sky-500 cursor-pointer"
+                    >
+                      Log out
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <span
+                className="cursor-pointer hover:text-[#7fad39] pl-5"
+                onClick={handleOpenLoginModal}
+              >
+                Login
+              </span>
+            )}
+            <FormLogin
+              show={showLoginModal}
+              handleCloseModal={handleCloseLoginModal}
+              handleOpenRegisterModal={handleOpenRegisterModal}
+              handleSetLoggedInEmail={handleSetLoggedInEmail}
+            />
+            <FormRegister
+              show={showRegisterModal}
+              handleCloseModal={handleCloseRegisterModal}
+              handleOpenLoginModal={handleOpenLoginModal}
+            />
           </div>
         </div>
       </div>

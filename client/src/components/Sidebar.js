@@ -5,36 +5,31 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import icons from "../ultils/icons";
-import "./Sidebar.css";
 import { apiGetCategories } from "../apis/app";
-import { NavLink } from "react-router-dom";
-import { createSlug } from '../ultils/helpers'
+import { Link } from "react-router-dom";
+
 const Sidebar = () => {
+  const [expanded, setExpanded] = useState("panel1-header");
   const [categories, setCategories] = useState([]);
 
-  const fetchCategories = async () => {
-    const response = await apiGetCategories();
-    if (response.success && response.data) {
-      setCategories(response.data);
-    } else {
-      console.log('api error');
-      console.log(response); // Log response để debug
-    }
-  };
-  
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await apiGetCategories();
+        setCategories(response.data); // Assuming your API response has a `data` property containing the categories
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     fetchCategories();
   }, []);
-  
-  console.log(categories); // Log categories sau khi cập nhật
-  
- 
-  const [expanded, setExpanded] = useState("panel1-header"); // State lưu trữ trạng thái mở rộng
 
   const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : ""); // Cập nhật state khi bấm mũi tên
+    setExpanded(isExpanded ? panel : "");
   };
   const { IoMdMenu } = icons;
+
   return (
     <div>
       <Accordion
@@ -65,27 +60,17 @@ const Sidebar = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography className="p-3">Fresh Meat</Typography>
-
-          <Typography className="p-3">Vegetables</Typography>
-
-          <Typography className="p-3">Fruits & Nut Gifts</Typography>
-
-          <Typography className="p-3">Fresh Berries</Typography>
-
-          <Typography className="p-3">Ocean Foods</Typography>
-
-          <Typography className="p-3">Butter & Eggs</Typography>
-
-          <Typography className="p-3">Fastfood</Typography>
-
-          <Typography className="p-3">Fresh Onion</Typography>
-
-          <Typography className="p-3">Papayaya & Crisps</Typography>
-
-          <Typography className="p-3">Oatmeal</Typography>
-
-          <Typography className="p-3">Fresh Bananas</Typography>
+          {categories.map((category) => (
+            <Link
+              to={`/category/${category.id}`}
+              key={category.id}
+              style={{ textDecoration: "none" }}
+            >
+              <Typography className="p-3" style={{ color: "inherit" }}>
+                {category.name}
+              </Typography>
+            </Link>
+          ))}
         </AccordionDetails>
       </Accordion>
     </div>

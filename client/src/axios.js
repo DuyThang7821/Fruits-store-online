@@ -1,26 +1,33 @@
-import axios from 'axios'
+import axios from "axios";
 const instance = axios.create({
-    baseURL: process.env.REACT_APP_API_URI,
-    
-  });
-// Add a request interceptor
-instance.interceptors.request.use(function (config) {
-    // Do something before request is sent
+  baseURL: process.env.REACT_APP_API_URI,
+});
+instance.interceptors.request.use(
+  function (config) {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      const { tokens } = JSON.parse(loggedInUser);
+      if (tokens && tokens.accessToken) {
+        config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+      }
+    }
     return config;
-  }, function (error) {
-    // Do something with request error
+  },
+  function (error) {
     return Promise.reject(error);
-  });
+  }
+);
 
-// Add a response interceptor
-instance.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+instance.interceptors.response.use(
+  function (response) {
     return response.data;
-  }, function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return error.data;
-  });
+  },
+  function (error) {
+    if (error.response) {
+      return Promise.reject(error.response.data);
+    }
+    return Promise.reject(error.message);
+  }
+);
 
-export default instance
+export default instance;
