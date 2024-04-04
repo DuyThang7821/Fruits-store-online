@@ -5,7 +5,6 @@ import {
   FeatureProducts,
   HotProduct,
   Blogs,
-  Footer
 } from "../../components/";
 import Slider from "react-slick";
 import { RiArrowDropDownLine } from "react-icons/ri";

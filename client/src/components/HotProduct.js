@@ -45,6 +45,10 @@ const HotProduct = () => {
       }
     });
   };
+
+
+
+
   return (
     <div className="mb-10 w-full flex flex-auto justify-between">
       <div className="overflow-hidden">

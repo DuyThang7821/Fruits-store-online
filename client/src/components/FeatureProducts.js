@@ -74,7 +74,6 @@ const FeatureProducts = () => {
             <h5 className="mt-2 font-bold text-lg">$30.00</h5>
           </div>
         </div>
-
         <div className="flex flex-col items-center justify-center p-4 relative group">
           <img
             src="https://preview.colorlib.com/theme/ogani/img/featured/feature-8.jpg.webp"
@@ -134,6 +133,7 @@ const FeatureProducts = () => {
             <h5 className="mt-2 font-bold text-lg">$30.00</h5>
           </div>
         </div>
+
 
         <div className="flex flex-col items-center justify-center p-4 relative group">
           <img

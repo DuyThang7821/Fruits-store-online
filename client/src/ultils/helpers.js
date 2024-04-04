@@ -43,3 +43,4 @@ export const validate = (payload, setInvalidFields, isLoginForm = false) => {
 
   return invalids === 0;
 };
+
