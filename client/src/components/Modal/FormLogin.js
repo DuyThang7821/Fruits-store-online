@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { toast } from "react-toastify";
@@ -9,11 +9,7 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
-const FormLogin = ({
-  show,
-  handleCloseModal,
-  handleOpenRegisterModal,
-}) => {
+const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState({
     email: "",
@@ -36,36 +32,34 @@ const FormLogin = ({
     if (isValid) {
       apiLogin(data)
         .then((res) => {
-          dispatch(
-            login({
-              isLoggedIn: true,
-              email: res.data.account.email,
-              tokens: res.data.tokens,
-            })
-          );
+          if (res.data && res.data.tokens) {
+            dispatch(
+              login({
+                isLoggedIn: true,
+                email: res.data.account.email,
+                tokens: {
+                  accessToken: res.data.tokens.accessToken,
+                  refreshToken: res.data.tokens.refreshToken,
+                },
+              })
+            );
 
-          localStorage.setItem(
-            "loggedInUser",
-            JSON.stringify({
-              ...res.data.account,
-              tokens: res.data.tokens,
-            })
-          );
+            handleCloseModal();
+            resetData(data);
 
-          handleCloseModal();
-          resetData(data);
-
-          Swal.fire({
-            icon: "success",
-            title: "Logged in successfully!",
-            text: `Logged in as ${res.data.account.email}`,
-          });
+            Swal.fire({
+              icon: "success",
+              title: "Logged in successfully!",
+              text: `Logged in as ${res.data.account.email}`,
+            });
+          } 
         })
         .catch((error) => {
           toast.error("Username or password incorrect", error);
         });
     }
   };
+
   return (
     <div>
       <Modal
