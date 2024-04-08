@@ -3,10 +3,10 @@ import icons from "../ultils/icons";
 import FormLogin from "./Modal/FormLogin";
 import FormRegister from "./Modal/FormRegister";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../store/user/userSlice";
+import { logout } from "../store/user/userSlice";
 import { toast } from "react-toastify";
 import { apiLogout } from "../apis/user";
-
+import Swal from "sweetalert2";
 const { MdEmail, FaFacebook, FaLinkedinIn, FaTwitter, FaUserCircle } = icons;
 
 const TopHeader = () => {
@@ -15,10 +15,6 @@ const TopHeader = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const loggedInEmail = useSelector((state) => state.user.email);
   const [isShowOption, setIsShowOption] = useState(false);
-  const handleSetLoggedInEmail = (email) => {
-    dispatch(login({ isLoggedIn: true, email }));
-    localStorage.setItem("loggedInUser", email);
-  };
   const handleOpenLoginModal = () => setShowLoginModal(true);
   const handleCloseLoginModal = () => setShowLoginModal(false);
 
@@ -31,6 +27,7 @@ const TopHeader = () => {
     setShowRegisterModal(false);
     setShowLoginModal(true);
   };
+
   useEffect(() => {
     const handleClickoutOptions = (e) => {
       const profile = document.getElementById("profile");
@@ -41,19 +38,26 @@ const TopHeader = () => {
       document.removeEventListener("click", handleClickoutOptions);
     };
   }, []);
-  const handleLogout = () => {
-    apiLogout()
-      .then(() => {
-        dispatch(logout());
-        localStorage.removeItem("loggedInUser");
-        setIsShowOption(false);
-        toast.success("Logged out successfully!");
-      })
-      .catch(() => {
-        toast.error("An error occurred while logging out.");
-      });
-  };
 
+  const handleLogout = () => {
+    Swal.fire({
+      text: 'Do you want to log out?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, log out!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        apiLogout()
+          .then(() => {
+            dispatch(logout());
+            setIsShowOption(false);
+          })
+          .catch(() => {
+            toast.error('logout failed');
+          });
+      }
+    });
+  };
   return (
     <div className="flex items-center justify-center h-[47px] w-full bg-[#f5f5f5]">
       <div className="w-main flex items-center justify-between">
@@ -115,7 +119,6 @@ const TopHeader = () => {
               show={showLoginModal}
               handleCloseModal={handleCloseLoginModal}
               handleOpenRegisterModal={handleOpenRegisterModal}
-              handleSetLoggedInEmail={handleSetLoggedInEmail}
             />
             <FormRegister
               show={showRegisterModal}

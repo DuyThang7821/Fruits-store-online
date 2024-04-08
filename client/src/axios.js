@@ -1,22 +1,8 @@
 import axios from "axios";
+
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URI,
 });
-instance.interceptors.request.use(
-  function (config) {
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      const { tokens } = JSON.parse(loggedInUser);
-      if (tokens && tokens.accessToken) {
-        config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-      }
-    }
-    return config;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
 
 instance.interceptors.response.use(
   function (response) {
@@ -29,5 +15,13 @@ instance.interceptors.response.use(
     return Promise.reject(error.message);
   }
 );
+
+export const setAuthToken = token => {
+  if (token) {
+    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete instance.defaults.headers.common['Authorization'];
+  }
+};
 
 export default instance;
