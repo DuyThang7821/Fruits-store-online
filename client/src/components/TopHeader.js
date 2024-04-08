@@ -41,10 +41,10 @@ const TopHeader = () => {
 
   const handleLogout = () => {
     Swal.fire({
-      text: 'Do you want to log out?',
-      icon: 'warning',
+      text: "Do you want to log out?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, log out!'
+      confirmButtonText: "Yes, log out!",
     }).then((result) => {
       if (result.isConfirmed) {
         apiLogout()
@@ -53,7 +53,7 @@ const TopHeader = () => {
             setIsShowOption(false);
           })
           .catch(() => {
-            toast.error('logout failed');
+            toast.error("logout failed");
           });
       }
     });
@@ -108,12 +108,21 @@ const TopHeader = () => {
                 )}
               </div>
             ) : (
-              <span
-                className="cursor-pointer hover:text-[#7fad39] pl-5"
-                onClick={handleOpenLoginModal}
-              >
-                Login
-              </span>
+              <div className="flex items-center">
+                <span
+                  className="cursor-pointer hover:text-[#7fad39] pl-5"
+                  onClick={handleOpenLoginModal}
+                >
+                  Login
+                </span>
+                <span className="mx-2">/</span>
+                <span
+                  className="cursor-pointer hover:text-[#7fad39]"
+                  onClick={handleOpenRegisterModal}
+                >
+                  Sign-up
+                </span>
+              </div>
             )}
             <FormLogin
               show={showLoginModal}
