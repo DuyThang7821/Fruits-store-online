@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
 import { toast } from "react-toastify";
 import { apiLogin } from "../../apis/user";
 import { validate } from "../../ultils/helpers";
 import { login } from "../../store/user/userSlice";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
-
+import ModalWrapper from "../common/ModalWrapper";
+import CloseIcon from "@mui/icons-material/Close";
 const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState({
@@ -52,22 +51,23 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
               title: "Logged in successfully!",
               text: `Logged in as ${res.data.account.email}`,
             });
-          } 
+          }
         })
         .catch((error) => {
           toast.error("Username or password incorrect", error);
         });
     }
   };
-
+  const handleCreateAccountClick = () => {
+    handleCloseModal();
+    handleOpenRegisterModal();
+  };
+  const handleCloseButtonClick = () => {
+    handleCloseModal();
+  };
   return (
     <div>
-      <Modal
-        open={show}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <ModalWrapper show={show} handleCloseModal={handleCloseModal}>
         <Box
           sx={{
             position: "absolute",
@@ -84,11 +84,12 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
             outline: "none",
           }}
         >
+          <CloseIcon
+            sx={{ position: "absolute", top: 10, right: 10, cursor: "pointer", fontSize: "20px", color:"#7fad39",}}
+            onClick={handleCloseButtonClick}
+          />
           <span
             className="text-[#7fad39] font-bold text-4xl  flex justify-center"
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
           >
             Login
           </span>
@@ -101,7 +102,7 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
                 Email
               </label>
               <input
-                className="border-gray-300 border focus:outline-none w-[437px] h-[52px] rounded-sm mb-2 p-2"
+                className="border-gray-300 border focus:outline-none w-[437px] h-[52px] rounded-md mb-2 p-2"
                 placeholder="Email"
                 type="email"
                 name="email"
@@ -126,7 +127,7 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
                 Password
               </label>
               <input
-                className="border-gray-300 border focus:outline-none w-[437px] h-[52px] rounded-sm mb-2 p-2"
+                className="border-gray-300 border focus:outline-none w-[437px] h-[52px] rounded-md mb-2 p-2"
                 placeholder="Password"
                 type="password"
                 name="password"
@@ -154,21 +155,22 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
           </form>
 
           <div className="flex justify-between">
-            <Link
-              className="text-blue-500 font-semibold mb-20"
-              href="http://localhost:3000/"
-            >
-              Go home
-            </Link>
             <button
               className="text-blue-500 font-semibold mb-20"
-              onClick={handleOpenRegisterModal}
+              href="http://localhost:3000/"
+              onClick={handleCloseModal}
+            >
+              Go home
+            </button>
+            <button
+              className="text-blue-500 font-semibold mb-20"
+              onClick={handleCreateAccountClick}
             >
               Create account
             </button>
           </div>
         </Box>
-      </Modal>
+      </ModalWrapper>
     </div>
   );
 };

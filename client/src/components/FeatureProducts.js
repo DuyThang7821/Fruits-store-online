@@ -27,7 +27,7 @@ const FeatureProducts = () => {
             TabIndicatorProps={{ style: { backgroundColor: "#7fad39" } }}
           >
             <Tab label="All" sx={{ color: "black !important" }} />
-            <Tab label="Orange" sx={{ color: "black !important" }} />
+            <Tab label="Fruits & Nut gifts" sx={{ color: "black !important" }} />
             <Tab label="Fresh meat" sx={{ color: "black !important" }} />
             <Tab label="Vegetable" sx={{ color: "black !important" }} />
             <Tab label="Fast food" sx={{ color: "black !important" }} />

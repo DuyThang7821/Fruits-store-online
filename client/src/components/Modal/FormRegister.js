@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
 import { Link } from "react-router-dom";
 import { validate } from "../../ultils/helpers";
 import { apiRegister } from "../../apis/user";
 import { toast } from "react-toastify";
 import { message } from "../../ultils/constants";
-
+import CloseIcon from "@mui/icons-material/Close";
+import ModalWrapper from "../common/ModalWrapper";
 const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
   const [invalidFields, setInvalidFields] = useState([]);
   const [data, setData] = useState({
@@ -60,19 +60,19 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
             error.response ? error.response.data.message : "Unknown error"
           );
         });
-    } else {
-      toast.error("Please check your input and try again.");
     }
   };
+  const handleGotoLoginClick = () => {
+    handleCloseModal(); 
+    handleOpenLoginModal(); 
+  };
 
+  const handleCloseButtonClick = () => {
+    handleCloseModal();
+  };
   return (
     <div>
-      <Modal
-        open={show}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <ModalWrapper show={show} handleCloseModal={handleCloseModal}>
         <Box
           sx={{
             position: "absolute",
@@ -93,11 +93,12 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
             alignItems: "center",
           }}
         >
+        <CloseIcon
+          sx={{ position: "absolute", top: 10, right: 10, cursor: "pointer",fontSize: "20px", color:"#7fad39" }}
+          onClick={handleCloseButtonClick} 
+        />
           <span
             className="text-[#7fad39] font-bold text-4xl mt-10"
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
           >
             Register
           </span>
@@ -273,19 +274,20 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
               <Link
                 className="text-blue-500 font-semibold mb-10"
                 href="http://localhost:3000/"
+                onClick={handleCloseModal}
               >
                 Go home
               </Link>
               <button
                 className="text-blue-500 font-semibold mb-10 px-2"
-                onClick={handleOpenLoginModal}
+                onClick={handleGotoLoginClick}
               >
                 Go to Login
               </button>
             </div>
           </form>
         </Box>
-      </Modal>
+      </ModalWrapper>
     </div>
   );
 };
