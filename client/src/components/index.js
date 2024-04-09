@@ -9,5 +9,7 @@ export {default as FormRegister} from './Modal/FormRegister';
 export {default as TopHeader} from './TopHeader';
 export {default as Blogs}  from './Blogs'
 export {default as Footer} from './Footer';
-export {default as ModalWrapper} from './common/ModalWrapper'
+export {default as ModalWrapper} from './common/ModalWrapper';
+export {default as PaginationPage} from './pagination/PaginationPage'
+
 

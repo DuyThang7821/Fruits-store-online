@@ -45,3 +45,9 @@ export const regex = {
   passwordLength: /^.{6,}$/,
   regexPhone: /^(0?3[2-9]|0?5[689]|0?7[06-9]|0?8[1-689]|0?9[0-46-9])[0-9]{7}$/,
 };
+export const tabsToCategoryIds = {
+  1: "7a029304-b425-458f-8236-0759c599ddd3", // Fruits & Nut gifts
+  2: "64ace051-71bd-41b4-a116-1013ee0ff59c", // Fresh meat
+  3: "164841d1-4613-4df4-b040-da4984c44267", // Vegetable
+  4: "22870c1f-0db9-4cc7-ad0b-0a14c3242517", // Fast food
+};
