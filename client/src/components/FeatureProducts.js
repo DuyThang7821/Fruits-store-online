@@ -5,24 +5,24 @@ import Tab from "@mui/material/Tab";
 import icons from "../ultils/icons";
 import { apigetProducts } from "../apis/products";
 import { apiGetCategories } from "../apis";
-import { tabsToCategoryIds } from "../ultils/constants";
 import PaginationPage from "./pagination/PaginationPage";
+import { product } from "../ultils/constants";
 
 const { BsHandbagFill, FaHeart, GrView } = icons;
 const FeatureProducts = () => {
-  const pageSize = parseInt(process.env.REACT_APP_LIMIT, 10) || 8;
   const [value, setValue] = useState(0);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showPagination, setShowPagination] = useState(false); 
+  const pageSize = product.productLimit || 8;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const categoriesResponse = await apiGetCategories();
         setCategories(categoriesResponse.data);
-
-        const productsResponse = await apigetProducts();
+        const productsResponse = await apigetProducts({ limit: pageSize });
         setProducts(productsResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -30,35 +30,35 @@ const FeatureProducts = () => {
     };
 
     fetchData();
-  }, []);
+  }, [pageSize]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setCurrentPage(1);
+    fetchProductByCategory(newValue);
+  };
+
+  const fetchProductByCategory = async (tabIndex) => {
+    try {
+      const productsResponse = await apigetProducts({});
+      let filteredProducts = [];
+      if (tabIndex === 0) {
+        filteredProducts = productsResponse.data;
+        setShowPagination(true); 
+      } else {
+        filteredProducts = productsResponse.data.filter((product) =>
+          product.categories.some((category) => category.id === tabIndex)
+        );
+        setShowPagination(false);
+      }
+      setProducts(filteredProducts);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   };
 
   useEffect(() => {
-    const fetchProductByCategory = async () => {
-      try {
-        const productsResponse = await apigetProducts({});
-        let filteredProducts = [];
-
-        if (value === 0) {
-          filteredProducts = productsResponse.data;
-        } else {
-          const categoryId = tabsToCategoryIds[value];
-          filteredProducts = productsResponse.data.filter((product) =>
-            product.categories.some((category) => category.id === categoryId)
-          );
-        }
-
-        setProducts(filteredProducts);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProductByCategory();
+    fetchProductByCategory(value);
   }, [value, currentPage]);
 
   const handlePageChange = (newPage) => {
@@ -72,7 +72,6 @@ const FeatureProducts = () => {
     indexOfFirstProduct,
     indexOfLastProduct
   );
-
   return (
     <div className="w-full flex flex-col items-center justify-center columns-3">
       <div className="text-center">
@@ -81,21 +80,25 @@ const FeatureProducts = () => {
       </div>
 
       <div className="mt-8">
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
           <Tabs
             value={value}
             onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
             centered
+            sx={{ width: "50%" }}
             TabIndicatorProps={{ style: { backgroundColor: "#7fad39" } }}
           >
             <Tab label="All" sx={{ color: "black !important" }} />
-            <Tab
-              label="Fruits & Nut gifts"
-              sx={{ color: "black !important" }}
-            />
-            <Tab label="Fresh meat" sx={{ color: "black !important" }} />
-            <Tab label="Vegetable" sx={{ color: "black !important" }} />
-            <Tab label="Fast food" sx={{ color: "black !important" }} />
+            {categories.map((category) => (
+              <Tab
+                key={category.id}
+                label={category.name}
+                value={category.id}
+                sx={{ color: "black !important" }}
+              />
+            ))}
           </Tabs>
         </Box>
       </div>
@@ -123,13 +126,15 @@ const FeatureProducts = () => {
           </div>
         ))}
       </div>
-      <div className="mt-5">
-        {totalPages > 0 && (
-          <PaginationPage
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-            totalPages={totalPages}
-          />
+      <div className="mt-20 w-full">
+        {showPagination && (
+          <div className="flex justify-end">
+            <PaginationPage
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              totalPages={totalPages}
+            />
+          </div>
         )}
       </div>
     </div>
