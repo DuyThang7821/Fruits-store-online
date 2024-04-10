@@ -45,3 +45,7 @@ export const regex = {
   passwordLength: /^.{6,}$/,
   regexPhone: /^(0?3[2-9]|0?5[689]|0?7[06-9]|0?8[1-689]|0?9[0-46-9])[0-9]{7}$/,
 };
+
+export const product = {
+  productLimit: 8
+};
