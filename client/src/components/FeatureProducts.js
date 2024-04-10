@@ -7,59 +7,57 @@ import { apigetProducts } from "../apis/products";
 import { apiGetCategories } from "../apis";
 import PaginationPage from "./pagination/PaginationPage";
 import { product } from "../ultils/constants";
-
+import { toast } from "react-toastify";
 const { BsHandbagFill, FaHeart, GrView } = icons;
 const FeatureProducts = () => {
-  const [value, setValue] = useState(0);
+  const [valueCategories, setValueCategories] = useState(0);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showPagination, setShowPagination] = useState(false); 
-  const pageSize = product.productLimit || 8;
+  const [showPagination, setShowPagination] = useState(false);
+  const pageSize = product.productLimit;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const categoriesResponse = await apiGetCategories();
         setCategories(categoriesResponse.data);
-        const productsResponse = await apigetProducts({ limit: pageSize });
-        setProducts(productsResponse.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        toast.error("Error fetching categories:", error);
       }
     };
 
     fetchData();
   }, [pageSize]);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleChange = (event, tabValue) => {
+    setValueCategories(tabValue);
     setCurrentPage(1);
-    fetchProductByCategory(newValue);
+    fetchProductByCategory(tabValue);
   };
 
-  const fetchProductByCategory = async (tabIndex) => {
+  const fetchProductByCategory = async (categoryId) => {
     try {
       const productsResponse = await apigetProducts({});
       let filteredProducts = [];
-      if (tabIndex === 0) {
+      if (categoryId === 0) {
         filteredProducts = productsResponse.data;
-        setShowPagination(true); 
+        setShowPagination(true);
       } else {
         filteredProducts = productsResponse.data.filter((product) =>
-          product.categories.some((category) => category.id === tabIndex)
+          product.categories.some((category) => category.id === categoryId)
         );
         setShowPagination(false);
       }
       setProducts(filteredProducts);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      toast.error("Error fetching products:", error);
     }
   };
 
   useEffect(() => {
-    fetchProductByCategory(value);
-  }, [value, currentPage]);
+    fetchProductByCategory(valueCategories);
+  }, [valueCategories, currentPage]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -81,25 +79,40 @@ const FeatureProducts = () => {
 
       <div className="mt-8">
         <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            centered
-            sx={{ width: "50%" }}
-            TabIndicatorProps={{ style: { backgroundColor: "#7fad39" } }}
-          >
-            <Tab label="All" sx={{ color: "black !important" }} />
-            {categories.map((category) => (
-              <Tab
-                key={category.id}
-                label={category.name}
-                value={category.id}
-                sx={{ color: "black !important" }}
-              />
-            ))}
-          </Tabs>
+          <Tab
+            label="All"
+            value={valueCategories}
+            selected={valueCategories === 0}
+            onChange={(event) => handleChange(event, 0)}
+            sx={{
+              borderBottom: valueCategories === 0 ? 2 : 0,
+              borderColor: valueCategories === 0 ? "#7fad39" : "",
+            }}
+          />
+          <Box sx={{ width: "calc(100% - 100px)", maxWidth: "800px" }}>
+            <Tabs
+              value={valueCategories}
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{ width: "100%" }}
+              TabIndicatorProps={{
+                style: {
+                  backgroundColor:
+                    valueCategories === 0 ? "transparent" : "#7fad39",
+                },
+              }}
+            >
+              {categories.map((category) => (
+                <Tab
+                  key={category.id}
+                  label={category.name}
+                  value={category.id}
+                  sx={{ color: "black !important" }}
+                />
+              ))}
+            </Tabs>
+          </Box>
         </Box>
       </div>
 
@@ -140,5 +153,4 @@ const FeatureProducts = () => {
     </div>
   );
 };
-
 export default FeatureProducts;
