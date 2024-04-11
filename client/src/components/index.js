@@ -11,5 +11,9 @@ export {default as Blogs}  from './Blogs'
 export {default as Footer} from './Footer';
 export {default as ModalWrapper} from './common/ModalWrapper';
 export {default as PaginationPage} from './pagination/PaginationPage'
+export {default as BreadCrumb} from './common/BreadCrumb';
+export {default as ButtonParrent} from './button/ButtonParrent';
+export {default as ButtonQuantity} from './button/ButtonQuantity';
+export {default as TabsParrent} from './common/TabsParrent'
 
 

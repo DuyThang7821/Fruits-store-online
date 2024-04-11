@@ -8,6 +8,7 @@ import { apiGetCategories } from "../apis";
 import PaginationPage from "./pagination/PaginationPage";
 import { product } from "../ultils/constants";
 import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 const { BsHandbagFill, FaHeart, GrView } = icons;
 const FeatureProducts = () => {
   const [valueCategories, setValueCategories] = useState(0);
@@ -16,6 +17,7 @@ const FeatureProducts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showPagination, setShowPagination] = useState(false);
   const pageSize = product.productLimit;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,6 +62,10 @@ const FeatureProducts = () => {
   }, [valueCategories, currentPage]);
 
   const handlePageChange = (newPage) => {
+    window.scrollTo({
+      top: window.innerHeight + 300, 
+      behavior: 'smooth' 
+    });
     setCurrentPage(newPage);
   };
 
@@ -70,6 +76,13 @@ const FeatureProducts = () => {
     indexOfFirstProduct,
     indexOfLastProduct
   );
+  const handleProductClick = (productId) => {
+    window.scrollTo({
+      top: window.innerHeight / 2, 
+      behavior: 'smooth' 
+    });
+    navigate(`/product/${productId}`);
+  };
   return (
     <div className="w-full flex flex-col items-center justify-center columns-3">
       <div className="text-center">
@@ -116,10 +129,11 @@ const FeatureProducts = () => {
         </Box>
       </div>
 
-      <div className="mt-8 flex flex-auto flex-wrap">
+      <div className="mt-8 flex flex-auto flex-wrap cursor-pointer">
         {currentProducts.map((product) => (
           <div
             key={product.id}
+            onClick={() => handleProductClick(product.id)}
             className="flex flex-col items-center justify-center p-3 relative group"
           >
             <img

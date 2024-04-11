@@ -8,15 +8,15 @@ import icons from "../ultils/icons";
 import { apiGetCategories } from "../apis/app";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
-  const [expanded, setExpanded] = useState("panel1-header");
+const Sidebar = ({ defaultExpanded }) => {
+  const [expanded, setExpanded] = useState(defaultExpanded ? "panel1-header" : false);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await apiGetCategories();
-        setCategories(response.data); // Assuming your API response has a `data` property containing the categories
+        setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -26,49 +26,56 @@ const Sidebar = () => {
   }, []);
 
   const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : "");
+    setExpanded(isExpanded ? panel : false);
   };
+
   const { IoMdMenu } = icons;
 
   return (
-    <div>
+    <div className="sidebar">
       <Accordion
-        className="w-[300px] rounded-md "
-        defaultExpanded={true}
+        defaultExpanded={defaultExpanded}
+        expanded={expanded === "panel1-header"}
         onChange={handleChange("panel1-header")}
-        sx={{ height: "100%", transition: "none" }}
+        sx={{
+          backgroundColor: "#7fad39",
+          color: "white",
+          position: 'sticky',
+          top: '10px', // Adjust this value as needed for your layout
+          zIndex: 2000, // Ensures that the Accordion is above other content
+        }}
       >
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+          expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
           aria-controls="panel1-content"
           id="panel1-header"
-          sx={{ backgroundColor: "#7fad39", height: "64px" }}
-          className="p-3"
+          sx={{ padding:'5px' }}
         >
           <IoMdMenu size={24} color="white" />
-          <Typography
-            sx={{
-              color: "white",
-              fontFamily: "Cairo, sans-serif",
-              fontWeight: "bold",
-              display: "grid",
-              placeItems: "center",
-            }}
-            className="flex flex-auto"
-          >
-            ALL DEPARTMENT
-          </Typography>
+          <Typography sx={{ fontWeight: "bold", marginLeft: '20px' }}>ALL DEPARTMENTS</Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails
+          sx={{
+            position: 'absolute',
+            top: '100%', // Places the AccordionDetails directly under the summary
+            width: '100%', // Match the width of the AccordionSummary
+            zIndex: 2001, // Make sure the AccordionDetails pops out over other content
+            backgroundColor: 'white', // Match your color scheme
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Optional: add shadow for better visibility
+          }}
+        >
           {categories.map((category) => (
             <Link
               to={`/category/${category.id}`}
               key={category.id}
-              style={{ textDecoration: "none" }}
+              style={{
+                textDecoration: 'none',
+                color: 'black', // Adjust text color as needed
+                display: 'block', // Each link is a block-level element
+                padding: '8px 16px', // Add padding for better touch targets
+              }}
             >
-              <Typography className="p-3" style={{ color: "inherit" }}>
-                {category.name}
-              </Typography>
+              <Typography>{category.name}</Typography>
             </Link>
           ))}
         </AccordionDetails>
