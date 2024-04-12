@@ -13,12 +13,24 @@ import { useParams } from "react-router-dom";
 import { apiGetProductById, apigetProducts } from "../../apis/products";
 import { product } from "../../ultils/constants";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import "./DetailProducts.css";
 const { FaHeart, FaFacebook, FaLinkedinIn, FaTwitter, GrView, BsHandbagFill } =
   icons;
+const settings = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2000,
+};
 const DetailProducts = () => {
   const [productDetails, setProductDetails] = useState(null);
   const { productId } = useParams();
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [currentImage, setCurrentImage] = useState(null);
   const handleRelatedProductClick = (relatedProductId) => {
     window.scrollTo({
       top: window.innerHeight / 2,
@@ -28,25 +40,12 @@ const DetailProducts = () => {
   };
   let navigate = useNavigate();
   useEffect(() => {
-    const fetchRelatedProducts = async () => {
-      try {
-        const response = await apigetProducts({
-          limit: product.productLimitDetail,
-        });
-        setRelatedProducts(response.data);
-      } catch (error) {
-        console.error("cannot get data", error);
-      }
-    };
-
-    fetchRelatedProducts();
-  }, [productId]);
-
-  useEffect(() => {
     const fetchProductDetails = async (id) => {
       try {
         const response = await apiGetProductById(id);
-        setProductDetails(response.data);
+        const productDetails = response.data;
+        setProductDetails(productDetails);
+        fetchRelatedProducts(productDetails.categories.map((category) => category.id));
       } catch (error) {
         console.error("cannot get data", error);
       }
@@ -56,6 +55,25 @@ const DetailProducts = () => {
       fetchProductDetails(productId);
     }
   }, [productId]);
+
+  const fetchRelatedProducts = async (categoryIds) => {
+    try {
+      const allProductsResponse = await apigetProducts({});
+
+      const relatedProducts = allProductsResponse.data
+        .filter((product) => {
+          return (
+            product.id !== productId &&
+            product.categories.some((category) => categoryIds.includes(category.id))
+          );
+        })
+        .slice(0, 4);
+
+      setRelatedProducts(relatedProducts);
+    } catch (error) {
+      console.error("cannot get related products", error);
+    }
+  };
   if (!productDetails) {
     return;
   }
@@ -64,6 +82,9 @@ const DetailProducts = () => {
     { name: "Shop", path: "/shop" },
     { name: productDetails.name, path: `/product/${productId}` },
   ];
+  const handleClickThumbnail = (imageUrl) => {
+    setCurrentImage(imageUrl);
+  };
   return (
     <div className="w-full">
       <div className="w-main flex">
@@ -109,7 +130,24 @@ const DetailProducts = () => {
       </div>
       <div className="mt-20 flex w-main h-full">
         <div className="w-[50%]">
-          <img src={productDetails.images} className="w-[555px] h-[575px]" />
+          <img
+            src={currentImage || productDetails.images[0]}
+            className="w-[555px] h-[575px]"
+          />
+          <div className="w-[458px] mx-10 mt-5">
+            <Slider className="image-slider" {...settings}>
+              {productDetails?.images.map((image, index) => (
+                <div key={index} className="px-2">
+                  <img
+                    onClick={() => handleClickThumbnail(image)}
+                    src={image}
+                    alt={`Product Image ${index}`}
+                    className="cursor-pointer border h-[120px] w-[300px] object-cover outline-none"
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
         </div>
         <div className="w-[50%]">
           <h3 className="font-bold text-[30px] p-2">{productDetails.name}</h3>

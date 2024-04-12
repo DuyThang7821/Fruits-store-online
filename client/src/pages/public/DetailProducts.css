@@ -1,0 +1,40 @@
+button.slick-next {
+    top: 50px !important;
+    right: -50px;
+    left: 470px;
+    z-index: 100;
+}
+
+button.slick-prev {
+    top: 50px !important;
+    left: -60px;
+    z-index: 100;
+}
+
+button.slick-next::before {
+    color: #000;
+    content: '\276F';
+    background-color: #fff;
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc; 
+    border-radius: 50% !important;
+}
+
+button.slick-prev::before {
+    color: #000;
+    content: '\276E';
+    background-color: #fff;
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 50% !important;
+}
