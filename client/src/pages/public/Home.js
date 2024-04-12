@@ -23,7 +23,7 @@ const Home = () => {
     <div className="w-full">
       <div className="w-main flex">
         <div className="flex flex-col gap-5 w-[25%] flex-auto pr-10">
-          <Sidebar />
+          <Sidebar defaultExpanded={true} />
         </div>
 
         <div className="flex flex-col gap-5 pl-10 w-[75%] flex-auto">

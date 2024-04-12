@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Routes} from 'react-router-dom';
-import {Home, Public} from './pages/public';
+import {DetailProducts, Home, Public} from './pages/public';
 import path from './ultils/path';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,6 +12,7 @@ function App() {
         <Routes>
           <Route path={path.PUBLIC} element={<Public />}>
             <Route path={path.HOME} element={<Home />} />
+            <Route path='/product/:productId' element={<DetailProducts />} />
           </Route>
         </Routes>
         <ToastContainer
