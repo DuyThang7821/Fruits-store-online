@@ -10,6 +10,7 @@ export const validate = (payload, setInvalidFields, isLoginForm = false) => {
         { key: 'confirmPassword', message: message.confirmPasswordRequired },
         { key: 'firstName', message: message.firstNameRequired },
         { key: 'lastName', message: message.lastNameRequired },
+        { key: 'address', message: message.addressRequired },
     ],
   ];
 
@@ -43,4 +44,3 @@ export const validate = (payload, setInvalidFields, isLoginForm = false) => {
 
   return invalids === 0;
 };
-

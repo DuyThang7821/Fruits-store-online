@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import { validate } from "../../ultils/helpers";
-import { apiRegister } from "../../apis/user";
+import { apiRegister} from "../../apis/user";
 import { toast } from "react-toastify";
 import { message } from "../../ultils/constants";
 import CloseIcon from "@mui/icons-material/Close";
@@ -16,6 +16,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
     phone: "",
     password: "",
     confirmPassword: "",
+    address: "",
     role: "customer",
     isActive: true,
   });
@@ -33,6 +34,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
       lastName: "",
       phone: "",
       confirmPassword: "",
+      address: "",
       role: "customer",
       isActive: true,
     });
@@ -79,8 +81,8 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 557,
-            height: 780,
+            width: 700,
+            height: 880,
             maxWidth: "90vw",
             maxHeight: "100vh",
             bgcolor: "background.paper",
@@ -167,7 +169,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
                 Email
               </label>
               <input
-                className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
+                className="border-gray-300 border focus:outline-none w-[627px] h-[51px] rounded-md mb-2 p-2 flex justify-center"
                 placeholder="Email"
                 type="email"
                 name="email"
@@ -193,7 +195,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
                 Phone Number
               </label>
               <input
-                className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
+                className="border-gray-300 border focus:outline-none w-[627px] h-[51px] rounded-md mb-2 p-2 flex justify-center"
                 placeholder="Phone Number"
                 type="text"
                 name="phone"
@@ -218,7 +220,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
                 Password
               </label>
               <input
-                className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
+                className="border-gray-300 border focus:outline-none w-[627px] h-[51px] rounded-md mb-2 p-2 flex justify-center"
                 placeholder="Password"
                 type="password"
                 name="password"
@@ -244,7 +246,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
                 Confirm Password
               </label>
               <input
-                className="border-gray-300 border focus:outline-none w-[483px] h-[51px] rounded-md mb-2 p-2"
+                className="border-gray-300 border focus:outline-none w-[627px] h-[51px] rounded-md mb-2 p-2 flex justify-center"
                 placeholder="Confirm Password"
                 type="password"
                 name="confirmPassword"
@@ -262,9 +264,35 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
               )}
             </div>
 
+            <div className="mb-2">
+              <label
+                htmlFor="Address"
+                className="mb-2 text-sm font-medium text-gray-900"
+              >
+                Address
+              </label>
+              <input
+                className="border-gray-300 border focus:outline-none w-[627px] h-[51px] rounded-md mb-2 p-2 flex justify-center"
+                placeholder="Address"
+                type="text"
+                name="address"
+                required
+                value={data.address}
+                onChange={handleInputChange}
+              />
+              {invalidFields.map(
+                (field, index) =>
+                  field.name === "address" && (
+                    <p key={index} className="text-red-500">
+                      {field.message}
+                    </p>
+                  )
+              )}
+            </div>
+
             <button
               type="button"
-              className="w-[483px] h-[39px] bg-[#7fad39] text-white mb-2 rounded-md text-lg"
+              className="w-[627px] h-[39px] bg-[#7fad39] text-white mb-2 rounded-md text-lg flex justify-center"
               onClick={handleRegisterClick}
             >
               Register

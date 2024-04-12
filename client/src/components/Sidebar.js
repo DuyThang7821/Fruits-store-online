@@ -42,7 +42,7 @@ const Sidebar = ({ defaultExpanded }) => {
           color: "white",
           position: 'sticky',
           top: '10px', // Adjust this value as needed for your layout
-          zIndex: 2000, // Ensures that the Accordion is above other content
+          zIndex: 1000, // Ensures that the Accordion is above other content
         }}
       >
         <AccordionSummary
