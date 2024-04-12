@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import ModalWrapper from "../common/ModalWrapper";
 import CloseIcon from "@mui/icons-material/Close";
+import './FormLogin.css'
 const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState({
@@ -50,6 +51,9 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
               icon: "success",
               title: "Logged in successfully!",
               text: `Logged in as ${res.data.account.email}`,
+              customClass: {
+                popup: 'swal-custom-zindex' 
+              }
             });
           }
         })

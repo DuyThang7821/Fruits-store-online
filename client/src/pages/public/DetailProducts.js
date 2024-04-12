@@ -14,7 +14,6 @@ import { apiGetProductById, apigetProducts } from "../../apis/products";
 import { product } from "../../ultils/constants";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
-import "./DetailProducts.css";
 const { FaHeart, FaFacebook, FaLinkedinIn, FaTwitter, GrView, BsHandbagFill } =
   icons;
 const settings = {
@@ -25,6 +24,7 @@ const settings = {
   slidesToScroll: 1,
   autoplay: true,
   autoplaySpeed: 2000,
+  arrows: false
 };
 const DetailProducts = () => {
   const [productDetails, setProductDetails] = useState(null);

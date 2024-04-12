@@ -36,6 +36,7 @@ export const message = {
   phoneFormat: "Phone number is incorrect",
   passwordRequired: "Password is required",
   confirmPasswordRequired: "Confirm Password is required",
+  addressRequired: "Address is required",
   passwordLength: "Password needs at least 6 characters",
   comparePassword: "Confirm Password do not match",
 };

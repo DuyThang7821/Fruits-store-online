@@ -9,6 +9,7 @@ const ModalWrapper = ({ show, handleCloseModal, children }) => {
         onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        style={{ zIndex: 2002 }}
       >
         {children}
       </Modal>
