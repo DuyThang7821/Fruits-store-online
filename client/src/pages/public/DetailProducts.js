@@ -14,6 +14,12 @@ import { apiGetProductById, apigetProducts } from "../../apis/products";
 import { product } from "../../ultils/constants";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
+import { apiAddCart, apiGetCartById, apiUpdateCart } from "../../apis";
+import { updateCart } from "../../store/user/userSlice";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+const pageTitle = "Ogani shop";
 const { FaHeart, FaFacebook, FaLinkedinIn, FaTwitter, GrView, BsHandbagFill } =
   icons;
 const settings = {
@@ -24,30 +30,30 @@ const settings = {
   slidesToScroll: 1,
   autoplay: true,
   autoplaySpeed: 2000,
-  arrows: false
+  arrows: false,
 };
 const DetailProducts = () => {
   const [productDetails, setProductDetails] = useState(null);
-  const { productId } = useParams();
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [currentImage, setCurrentImage] = useState(null);
-  const handleRelatedProductClick = (relatedProductId) => {
-    window.scrollTo({
-      top: window.innerHeight / 2,
-      behavior: "smooth",
-    });
-    navigate(`/product/${relatedProductId}`);
-  };
-  let navigate = useNavigate();
+  const { productId } = useParams();
+  const userId = useSelector((state) => state.user.userId);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(1);
+
   useEffect(() => {
     const fetchProductDetails = async (id) => {
       try {
         const response = await apiGetProductById(id);
         const productDetails = response.data;
         setProductDetails(productDetails);
-        fetchRelatedProducts(productDetails.categories.map((category) => category.id));
+        fetchRelatedProducts(
+          productDetails.categories.map((category) => category.id)
+        );
       } catch (error) {
-        console.error("cannot get data", error);
+        console.error("Cannot get product data", error);
       }
     };
 
@@ -59,31 +65,82 @@ const DetailProducts = () => {
   const fetchRelatedProducts = async (categoryIds) => {
     try {
       const allProductsResponse = await apigetProducts({});
-
       const relatedProducts = allProductsResponse.data
         .filter((product) => {
           return (
             product.id !== productId &&
-            product.categories.some((category) => categoryIds.includes(category.id))
+            product.categories.some((category) =>
+              categoryIds.includes(category.id)
+            )
           );
         })
         .slice(0, 4);
-
       setRelatedProducts(relatedProducts);
     } catch (error) {
-      console.error("cannot get related products", error);
+      console.error("Cannot get related products", error);
     }
   };
+
   if (!productDetails) {
-    return;
+    return null;
   }
   const breadcrumbs = [
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
     { name: productDetails.name, path: `/product/${productId}` },
   ];
+
   const handleClickThumbnail = (imageUrl) => {
     setCurrentImage(imageUrl);
+  };
+
+  const handleAddToCart = async (productId, quantity) => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "You need to log in to add products to the cart!",
+      });
+      return;
+    }
+    try {
+      const cartResponse = await apiGetCartById(userId);
+      let cart = [];
+      if (cartResponse.data) {
+        cart = cartResponse.data.cartDetails;
+      } else {
+        await apiAddCart({ accountId: userId, cartDetails: [] });
+        const newCartResponse = await apiGetCartById(userId);
+        cart = newCartResponse.data.cartDetails;
+      }
+      const productIndex = cart.findIndex((item) => item.product.id === productId);
+      if (productIndex !== -1) {
+        cart[productIndex].quantity += quantity;
+      } else {
+        const productDetailsResponse = await apiGetProductById(productId);
+        const productDetails = productDetailsResponse.data;
+        cart.push({ product: productDetails, quantity: quantity });
+      }
+      const updateData = cart.map((detail) => ({
+        productId: detail.product.id,
+        quantity: detail.quantity,
+      }));
+      await apiUpdateCart({ accountId: userId, cartDetails: updateData });
+      dispatch(updateCart({ cartDetails: cart }));
+      Swal.fire({
+        icon: "success",
+        title: "Add product to cart successfully!",
+      });
+    } catch (error) {
+      toast.error("Cannot update cart");
+    }
+  };
+
+  const handleRelatedProductClick = (relatedProductId) => {
+    window.scrollTo({
+      top: window.innerHeight / 2,
+      behavior: "smooth",
+    });
+    navigate(`/product/${relatedProductId}`);
   };
   return (
     <div className="w-full">
@@ -126,7 +183,7 @@ const DetailProducts = () => {
         </div>
       </div>
       <div className="mt-10 w-full">
-        <BreadCrumb crumbs={breadcrumbs} />
+        <BreadCrumb crumbs={breadcrumbs} title={pageTitle} />
       </div>
       <div className="mt-20 flex w-main h-full">
         <div className="w-[50%]">
@@ -158,10 +215,14 @@ const DetailProducts = () => {
 
           <div className="mt-5 flex p-2">
             <div className="mx-2">
-              <ButtonQuantity />
+              <ButtonQuantity quantity={quantity} setQuantity={setQuantity} />
             </div>
             <div className="mx-2">
-              <ButtonParrent />
+              <ButtonParrent
+                onClick={() => handleAddToCart(productId, quantity)}
+              >
+                Add to Cart
+              </ButtonParrent>
             </div>
 
             <div className="bg-gray-100 w-[50px] h-[50px] mx-2 flex justify-center items-center cursor-pointer rounded-md">
@@ -234,7 +295,13 @@ const DetailProducts = () => {
                 <div className="absolute top-[50px] left-2 w-full h-full flex justify-center items-center opacity-0 group-hover:opacity-100 hover:animate-slide-top">
                   <GrView className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
                   <FaHeart className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
-                  <BsHandbagFill className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
+                  <BsHandbagFill
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(relatedProduct.id, 1);
+                    }}
+                    className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
+                  />
                 </div>
                 <h5 className="text-center">{relatedProduct.name}</h5>
                 <p className="text-center font-bold">${relatedProduct.price}</p>

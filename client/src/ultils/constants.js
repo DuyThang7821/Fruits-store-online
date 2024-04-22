@@ -95,5 +95,17 @@ export const productInfoTabs = [
     Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; 
     Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Proin eget tortor risus.
     `,
-  },
+  }
 ];
+export const titlePage = [
+  {
+    id: 1,
+    title: 'Ogani shop',
+  },
+
+  {
+    id: 2,
+    title: 'Shopping cart',
+  },
+]
+

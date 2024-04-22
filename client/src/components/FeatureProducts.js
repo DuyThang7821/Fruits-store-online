@@ -3,12 +3,21 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import icons from "../ultils/icons";
-import { apigetProducts } from "../apis/products";
-import { apiGetCategories } from "../apis";
+import { apiGetProductById, apigetProducts } from "../apis/products";
+import {
+  apiAddCart,
+  apiGetCartById,
+  apiGetCategories,
+  apiUpdateCart,
+} from "../apis";
 import PaginationPage from "./pagination/PaginationPage";
 import { product } from "../ultils/constants";
 import { toast } from "react-toastify";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { updateCart } from "../store/user/userSlice";
+import Swal from "sweetalert2";
 const { BsHandbagFill, FaHeart, GrView } = icons;
 const FeatureProducts = () => {
   const [valueCategories, setValueCategories] = useState(0);
@@ -17,6 +26,9 @@ const FeatureProducts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showPagination, setShowPagination] = useState(false);
   const pageSize = product.productLimit;
+  const userId = useSelector((state) => state.user.userId);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,12 +75,11 @@ const FeatureProducts = () => {
 
   const handlePageChange = (newPage) => {
     window.scrollTo({
-      top: window.innerHeight + 300, 
-      behavior: 'smooth' 
+      top: window.innerHeight + 300,
+      behavior: "smooth",
     });
     setCurrentPage(newPage);
   };
-
   const totalPages = Math.ceil(products.length / pageSize);
   const indexOfLastProduct = currentPage * pageSize;
   const indexOfFirstProduct = indexOfLastProduct - pageSize;
@@ -76,10 +87,57 @@ const FeatureProducts = () => {
     indexOfFirstProduct,
     indexOfLastProduct
   );
+
+  const handleAddToCart = async (productId, quantity = 1) => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "You need to log in to add products to the cart!",
+      });
+      return;
+    }
+    try {
+      const cartResponse = await apiGetCartById(userId);
+      let cart = [];
+      if (cartResponse.statusCode === 404) {
+        try {
+          await apiAddCart({ accountId: userId, cartDetails: [{productId: productId, quantity: quantity}] });
+          const newCartResponse = await apiGetCartById(userId);
+          cart = newCartResponse.data.cartDetails || [];
+        } catch (error) {
+          console.error("Error creating cart:", error);
+          toast.error("Cannot create cart");
+          return;
+        }
+      } else if (cartResponse.data) {
+        cart = cartResponse.data.cartDetails || [];
+      }
+      const productIndex = cart.findIndex((item) => item.product.id === productId);
+      if (productIndex !== -1) {
+        cart[productIndex].quantity += quantity;
+      } else {
+        const productDetailsResponse = await apiGetProductById(productId);
+        const productDetails = productDetailsResponse.data;
+        cart.push({ product: productDetails, quantity: quantity });
+      }
+      const updateData = cart.map((detail) => ({
+        productId: detail.product.id,
+        quantity: detail.quantity,
+      }));
+      await apiUpdateCart({ accountId: userId, cartDetails: updateData });
+      dispatch(updateCart({ cartDetails: cart }));
+      Swal.fire({
+        icon: "success",
+        title: "Add product to cart successfully!",
+      });
+    } catch (error) {
+      toast.error("Cannot update cart");
+    }
+  };
   const handleProductClick = (productId) => {
     window.scrollTo({
-      top: window.innerHeight / 2, 
-      behavior: 'smooth' 
+      top: window.innerHeight / 2,
+      behavior: "smooth",
     });
     navigate(`/product/${productId}`);
   };
@@ -144,7 +202,13 @@ const FeatureProducts = () => {
             <div className="absolute top-[50px] left-2 w-full h-full flex justify-center items-center opacity-0 group-hover:opacity-100 hover:animate-slide-top">
               <GrView className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
               <FaHeart className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
-              <BsHandbagFill className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
+              <BsHandbagFill
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddToCart(product.id);
+                }}
+                className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
+              />
             </div>
             <div className="flex flex-col items-center">
               <span className="mt-2">{product.name}</span>

@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/logo.png.webp";
 import icons from "../ultils/icons";
 import { Link } from "react-router-dom";
 import path from "../ultils/path";
-const { BsHandbagFill,  FaHeart } = icons;
+import {  useSelector } from "react-redux";
+
+const { BsHandbagFill, FaHeart } = icons;
 const Header = () => {
+  const [cartItemCount, setCartItemCount] = useState(0);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const cartItems = useSelector((state) => state.user.cart);
+
+  useEffect(() => {
+    if (cartItems) {
+      let itemCount = 0;
+      cartItems.forEach((item) => {
+        itemCount += item.quantity;
+      });
+      setCartItemCount(itemCount);
+    }
+  }, [cartItems]);
+
+  const totalPrice = cartItems?.reduce(
+    (total, item) => total + item.quantity * (item.product?.price ?? 0),
+    0
+  );
+
   return (
     <div className=" w-main flex justify-between h-[127px] py-[35px]">
       <div>
@@ -35,25 +56,31 @@ const Header = () => {
         </Link>
       </div>
 
-
       <div className="flex text-[13px] ">
-        <div class="flex items-center justify-center ">
-          <FaHeart size={24} />
-          <sup class="text-xs rounded-full bg-[#7fad39] text-white px-1 mr-2">
-            2
-          </sup>
-        </div>
-        <div class="flex items-center justify-center ">
-          <BsHandbagFill size={24} />
-          <sup class="text-xs rounded-full bg-[#7fad39] text-white px-1 -ml-2">
-            3
-          </sup>
-        </div>
+        {isLoggedIn && (
+          <>
+            <div class="flex items-center justify-center ">
+              <FaHeart size={24} />
+              <sup class="text-xs rounded-full bg-[#7fad39] text-white px-1 mr-2">
+                2
+              </sup>
+            </div>
+            <Link
+              to={`/${path.CART}`}
+              className="flex items-center justify-center cursor-pointer "
+            >
+              <BsHandbagFill size={24} />
+              <sup className="text-xs rounded-full bg-[#7fad39] text-white px-1 -ml-2">
+                {cartItemCount}
+              </sup>
+            </Link>
 
-        <div className="flex items-center justify-center gap-2 px-6">
-          <span className="text-gray-500 text-[14px]">item:</span>
-          <span className="font-bold text-[16px]">$150.00</span>
-        </div>
+            <div className="flex items-center justify-center gap-2 px-6">
+              <span className="text-gray-500 text-[14px]">item:</span>
+              <span className="font-bold text-[16px]">${totalPrice}</span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
