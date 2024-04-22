@@ -42,7 +42,7 @@ const DetailProducts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
-
+  const cartItems = useSelector((state) => state.user.cart);
   useEffect(() => {
     const fetchProductDetails = async (id) => {
       try {
@@ -94,7 +94,15 @@ const DetailProducts = () => {
     setCurrentImage(imageUrl);
   };
 
-  const handleAddToCart = async (productId, quantity) => {
+  const handleSetQuantity = (index, newQuantity) => {
+    const updatedCartItems = cartItems.map((item, i) =>
+      i === index ? { ...item, quantity: newQuantity } : item
+    );
+    dispatch(updateCart({ cartDetails: updatedCartItems }));
+    updateCartOnServer(updatedCartItems);
+  };
+
+  const handleAddToCart = async (relatedProduct, quantity) => {
     if (!isLoggedIn) {
       Swal.fire({
         icon: "warning",
@@ -102,39 +110,73 @@ const DetailProducts = () => {
       });
       return;
     }
+    
     try {
-      const cartResponse = await apiGetCartById(userId);
-      let cart = [];
-      if (cartResponse.data) {
-        cart = cartResponse.data.cartDetails;
+      let cartResponse = await apiGetCartById(userId);
+      let cart = cartResponse.data.cartDetails;
+      const productIndex = cart.findIndex((item) => item.product.id === relatedProduct.id);
+      if (cart && productIndex !== -1) {
+        let data = []
+        cart.map((item) =>  data.push({productId: item.product.id, quantity:  item.quantity }))
+        data[productIndex].quantity += quantity;
+        await apiUpdateCart({
+            accountId: userId,
+            cartDetails: data
+          });
+          Swal.fire({
+            icon: "success",
+            title: "update product to cart successfully!",
+          });
       } else {
-        await apiAddCart({ accountId: userId, cartDetails: [] });
-        const newCartResponse = await apiGetCartById(userId);
-        cart = newCartResponse.data.cartDetails;
+        let data = []
+        cart.map((item) => data.push({productId: item.product.id, quantity: item.quantity}))
+        data.push({productId: relatedProduct.id, quantity: quantity})
+        await apiUpdateCart({ accountId: userId, cartDetails: data });
+        Swal.fire({
+          icon: "success",
+          title: "Add product to cart successfully!",
+        });
       }
-      const productIndex = cart.findIndex((item) => item.product.id === productId);
-      if (productIndex !== -1) {
-        cart[productIndex].quantity += quantity;
-      } else {
-        const productDetailsResponse = await apiGetProductById(productId);
-        const productDetails = productDetailsResponse.data;
-        cart.push({ product: productDetails, quantity: quantity });
-      }
-      const updateData = cart.map((detail) => ({
-        productId: detail.product.id,
-        quantity: detail.quantity,
-      }));
-      await apiUpdateCart({ accountId: userId, cartDetails: updateData });
-      dispatch(updateCart({ cartDetails: cart }));
-      Swal.fire({
-        icon: "success",
-        title: "Add product to cart successfully!",
-      });
+      const res = await apiGetCartById(userId);
+      dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
     } catch (error) {
-      toast.error("Cannot update cart");
+      if (error.statusCode === 404) {
+        await apiAddCart({ accountId: userId, cartDetails: [{ productId: relatedProduct.id, quantity: quantity }] });
+        Swal.fire({
+          icon: "success",
+          title: "Add product to cart successfully!",
+        });
+        const res = await apiGetCartById(userId);
+        dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
+      } else {
+        toast.error("Cannot update cart");
+        console.error("Error updating cart:", error);
+      }
     }
   };
 
+  const updateCartOnServer = async (cartDetails) => {
+    try {
+      const updateData = cartDetails
+        .map((detail) => ({
+          productId: detail.product?.id,
+          quantity: detail.quantity,
+          accountId: userId,
+        }))
+        .filter((detail) => detail.productId);
+
+      if (updateData.length > 0) {
+        const response = await apiUpdateCart({
+          accountId: userId,
+          cartDetails: updateData,
+        });
+        dispatch(updateCart({ cartDetails: response.data.cart }));
+        localStorage.setItem("cartItems", JSON.stringify(response.data.cart));
+      }
+    } catch (error) {
+      console.error("Error updating cart on server:", error);
+    }
+  };
   const handleRelatedProductClick = (relatedProductId) => {
     window.scrollTo({
       top: window.innerHeight / 2,
@@ -219,7 +261,7 @@ const DetailProducts = () => {
             </div>
             <div className="mx-2">
               <ButtonParrent
-                onClick={() => handleAddToCart(productId, quantity)}
+                onClick={() => handleAddToCart(productDetails, quantity)}
               >
                 Add to Cart
               </ButtonParrent>
@@ -298,7 +340,7 @@ const DetailProducts = () => {
                   <BsHandbagFill
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleAddToCart(relatedProduct.id, 1);
+                      handleAddToCart(relatedProduct);
                     }}
                     className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
                   />

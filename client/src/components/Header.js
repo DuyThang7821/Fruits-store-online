@@ -12,12 +12,9 @@ const Header = () => {
   const cartItems = useSelector((state) => state.user.cart);
 
   useEffect(() => {
+    console.log(cartItems);
     if (cartItems) {
-      let itemCount = 0;
-      cartItems.forEach((item) => {
-        itemCount += item.quantity;
-      });
-      setCartItemCount(itemCount);
+      setCartItemCount(cartItems?.length);
     }
   }, [cartItems]);
 

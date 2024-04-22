@@ -62,7 +62,7 @@ const Cart = () => {
       await updateCartOnServer(updatedCartItems);
     }
   };
-  
+
   const updateCartOnServer = async (cartDetails) => {
     try {
       const updateData = cartDetails

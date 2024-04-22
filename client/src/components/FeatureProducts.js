@@ -88,7 +88,7 @@ const FeatureProducts = () => {
     indexOfLastProduct
   );
 
-  const handleAddToCart = async (productId, quantity = 1) => {
+  const handleAddToCart = async (product) => {
     if (!isLoggedIn) {
       Swal.fire({
         icon: "warning",
@@ -99,39 +99,41 @@ const FeatureProducts = () => {
     
     try {
       let cartResponse = await apiGetCartById(userId);
-      let cart = [];
-      if (cartResponse.statusCode === 404) {
-        await apiAddCart({ accountId: userId, cartDetails: [{ productId: productId, quantity: 1 }] });
-        cartResponse = await apiGetCartById(userId);
-      }
-      cart = cartResponse.data.cartDetails || [];
-      const productIndex = cart.findIndex((item) => item.product.id === productId);
-      if (productIndex !== -1) {
-        if (cart[productIndex].quantity === 1) {
-          //cart[productIndex].quantity += 1;
-        }
+      let cart = cartResponse.data.cartDetails;
+      const productIndex = cart.findIndex((item) => item.product.id === product.id);
+      if (cart && productIndex !== -1) {
+        let data = []
+        cart.map((item) =>  data.push({productId: item.product.id, quantity:  item.quantity }))
+        data[productIndex].quantity += 1;
+        await apiUpdateCart({
+            accountId: userId,
+            cartDetails: data
+          });
+          Swal.fire({
+            icon: "success",
+            title: "update product to cart successfully!",
+          });
       } else {
-        const productDetailsResponse = await apiGetProductById(productId);
-        const productDetails = productDetailsResponse.data;
-        cart.push({ product: productDetails, quantity: quantity });
+        let data = []
+        cart.map((item) => data.push({productId: item.product.id, quantity: item.quantity}))
+        data.push({productId: product.id, quantity: 1})
+        await apiUpdateCart({ accountId: userId, cartDetails: data });
+        Swal.fire({
+          icon: "success",
+          title: "Add product to cart successfully!",
+        });
       }
-      await apiUpdateCart({
-        accountId: userId,
-        cartDetails: cart.map(detail => ({
-          productId: detail.product.id,
-          quantity: detail.quantity, 
-        })),
-      });
-      
-      dispatch(updateCart({ cartDetails: cart }));
-      Swal.fire({
-        icon: "success",
-        title: "Add product to cart successfully!",
-      });
+      const res = await apiGetCartById(userId);
+      dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
     } catch (error) {
       if (error.statusCode === 404) {
-        await apiAddCart({ accountId: userId, cartDetails: [{ productId: productId, quantity: 1 }] });
-        handleAddToCart(productId, quantity);
+        await apiAddCart({ accountId: userId, cartDetails: [{ productId: product.id, quantity: 1 }] });
+        Swal.fire({
+          icon: "success",
+          title: "Add product to cart successfully!",
+        });
+        const res = await apiGetCartById(userId);
+        dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
       } else {
         toast.error("Cannot update cart");
         console.error("Error updating cart:", error);
@@ -213,7 +215,7 @@ const FeatureProducts = () => {
               <BsHandbagFill
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleAddToCart(product.id);
+                  handleAddToCart(product);
                 }}
                 className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
               />
