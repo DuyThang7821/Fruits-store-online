@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { HiPlusSm, HiMinusSm } from "react-icons/hi";
 
-const ButtonQuantity = () => {
-  const [quantity, setQuantity] = useState(1);
+const ButtonQuantity = ({ quantity, setQuantity }) => {
 
   const handleIncrease = () => {
-    setQuantity(quantity + 1);
+    setQuantity(quantity + 1); // 
   };
 
   const handleDecrease = () => {
@@ -15,9 +14,9 @@ const ButtonQuantity = () => {
   };
 
   const handleChange = (e) => {
-    const newQuantity = parseInt(e.target.value);
+    const newQuantity = parseInt(e.target.value, 10); 
     if (!isNaN(newQuantity) && newQuantity >= 1) {
-      setQuantity(newQuantity);
+      setQuantity(newQuantity); 
     }
   };
 

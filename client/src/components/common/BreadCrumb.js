@@ -1,13 +1,11 @@
 import * as React from "react";
-import { useLocation, Link as RouterLink } from "react-router-dom";
+import {  Link as RouterLink } from "react-router-dom";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-
-const BreadCrumb = ({ crumbs = [] }) => {
-
-  return (
+const BreadCrumb = ({ crumbs = [], title }) => {
+return (
     <div className="relative w-full">
       <img
         src="https://preview.colorlib.com/theme/ogani/img/breadcrumb.jpg.webp"
@@ -16,7 +14,7 @@ const BreadCrumb = ({ crumbs = [] }) => {
         className="w-full h-[164px]"
       />
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white">
-        <h1 className="text-[46px] mb-8 font-bold">Ogani Shop</h1>
+        <h1 className="text-[46px] mb-8 font-bold">{title}</h1>
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"

@@ -37,6 +37,7 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
               login({
                 isLoggedIn: true,
                 email: res.data.account.email,
+                userId: res.data.account.id, 
                 tokens: {
                   accessToken: res.data.tokens.accessToken,
                   refreshToken: res.data.tokens.refreshToken,
