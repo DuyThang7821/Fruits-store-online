@@ -8,10 +8,11 @@ import {
 } from "../../components";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCart, clearCartId } from "../../store/user/userSlice"; // Import clearCartId action
+import { updateCart, clearCartId } from "../../store/user/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import path from "../../ultils/path";
 import { apiGetCartById, apiUpdateCart } from "../../apis";
+import { toast } from "react-toastify";
 const pageTitle = "Shopping Cart";
 const Cart = () => {
   const dispatch = useDispatch();
@@ -23,11 +24,11 @@ const Cart = () => {
       try {
         const cartResponse = await apiGetCartById(userId);
         if (!cartResponse.data || !cartResponse.data.cartDetails) {
-          dispatch(clearCartId()); // Clear cart ID from localStorage if cart is empty
+          dispatch(clearCartId());
           return;
         }
       } catch (error) {
-        console.error("Error fetching cart:", error);
+        toast.error("Error fetching cart:");
       }
     };
 

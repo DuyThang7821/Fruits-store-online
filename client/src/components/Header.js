@@ -12,7 +12,6 @@ const Header = () => {
   const cartItems = useSelector((state) => state.user.cart);
 
   useEffect(() => {
-    console.log(cartItems);
     if (cartItems) {
       setCartItemCount(cartItems?.length);
     }
