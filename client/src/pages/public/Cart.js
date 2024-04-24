@@ -32,7 +32,6 @@ const Cart = () => {
           return;
         }
       } catch (error) {
-        console.error("Error fetching cart:", error);
       }
     };
   
@@ -84,7 +83,6 @@ const Cart = () => {
           cartDetails: updateData,
         });
         dispatch(updateCart({ cartDetails: response.data.cart }));
-        localStorage.setItem("cartItems", JSON.stringify(response.data.cart));
       }
     } catch (error) {
       console.error("Error updating cart on server:", error);
