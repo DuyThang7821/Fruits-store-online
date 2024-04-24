@@ -15,7 +15,7 @@ import { product } from "../../ultils/constants";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import { apiAddCart, apiGetCartById, apiUpdateCart } from "../../apis";
-import { updateCart } from "../../store/user/userSlice";
+import { setCartId, updateCart } from "../../store/user/userSlice";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
@@ -93,15 +93,6 @@ const DetailProducts = () => {
   const handleClickThumbnail = (imageUrl) => {
     setCurrentImage(imageUrl);
   };
-
-  const handleSetQuantity = (index, newQuantity) => {
-    const updatedCartItems = cartItems.map((item, i) =>
-      i === index ? { ...item, quantity: newQuantity } : item
-    );
-    dispatch(updateCart({ cartDetails: updatedCartItems }));
-    updateCartOnServer(updatedCartItems);
-  };
-
   const handleAddToCart = async (relatedProduct, quantity) => {
     if (!isLoggedIn) {
       Swal.fire({
@@ -138,6 +129,9 @@ const DetailProducts = () => {
         });
       }
       const res = await apiGetCartById(userId);
+      const cartId = res.data?.id; 
+      dispatch(setCartId(cartId));
+      localStorage.setItem('cartId', cartId); 
       dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
     } catch (error) {
       if (error.statusCode === 404) {
@@ -147,6 +141,9 @@ const DetailProducts = () => {
           title: "Add product to cart successfully!",
         });
         const res = await apiGetCartById(userId);
+        const cartId = res.data?.id; 
+        dispatch(setCartId(cartId));
+        localStorage.setItem('cartId', cartId); 
         dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
       } else {
         toast.error("Cannot update cart");
@@ -340,7 +337,7 @@ const DetailProducts = () => {
                   <BsHandbagFill
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleAddToCart(relatedProduct);
+                      handleAddToCart(relatedProduct,1);
                     }}
                     className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
                   />

@@ -12,3 +12,5 @@ export const apiAddCart = (data) => axios.post('/api/v1/carts', data);
 
 export const apiUpdateCart = (data) => axios.put('/api/v1/carts/update-cart', data);
 
+export const apiCreateOder = (cartId) => axios.post(`/api/v1/orders/order-products/${cartId}/cart-id`)
+

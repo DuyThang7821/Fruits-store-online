@@ -4,14 +4,16 @@ import {
   BreadCrumb,
   ButtonParrent,
   ButtonQuantity,
+  Paypal,
   Sidebar,
 } from "../../components";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCart, clearCartId } from "../../store/user/userSlice";
+import { updateCart, clearCartId, setCartId } from "../../store/user/userSlice"; // Import clearCartId action
 import { Link, useNavigate } from "react-router-dom";
 import path from "../../ultils/path";
-import { apiGetCartById, apiUpdateCart } from "../../apis";
+import { apiCreateOder, apiGetCartById, apiUpdateCart } from "../../apis";
+import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 const pageTitle = "Shopping Cart";
 const Cart = () => {
@@ -19,16 +21,19 @@ const Cart = () => {
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const userId = useSelector((state) => state.user.userId);
+  const cartId = useSelector((state) => state.user.cartId);
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const cartResponse = await apiGetCartById(userId);
+        const cartId = cartResponse.data?.id; 
+        dispatch(setCartId(cartId))
         if (!cartResponse.data || !cartResponse.data.cartDetails) {
           dispatch(clearCartId());
           return;
         }
       } catch (error) {
-        toast.error("Error fetching cart:");
+        toast.error("Error fetching cart:", error);
       }
     };
 
@@ -83,9 +88,27 @@ const Cart = () => {
         localStorage.setItem("cartItems", JSON.stringify(response.data.cart));
       }
     } catch (error) {
-      console.error("Error updating cart on server:", error);
+      toast.error("Error updating cart on server:", error);
     }
   };
+  const handleCheckout = async () => {
+    try {
+      const response = await apiCreateOder(cartId);
+      if (response.statusCode === 201) {
+        Swal.fire('Chúc mừng!', 'Bạn đã đặt hàng thành công', 'success').then(() => {
+          dispatch(clearCartId());
+          localStorage.removeItem("cartItems");
+          navigate('/');
+        });
+      } else {
+        throw new Error("Error creating order");
+      }
+    } catch (error) {
+      Swal.fire('Oops!', 'Có lỗi xảy ra khi đặt hàng', 'error');
+    }
+  };
+  
+  
 
   const handleContinueShopping = (e) => {
     e.preventDefault();
@@ -217,7 +240,10 @@ const Cart = () => {
               Continue Shopping
             </ButtonParrent>
           </Link>
-          <div className="bg-gray-100 w-[555px] h-[256px] p-5 flex flex-col justify-between">
+          <ButtonParrent className="p-3 bg-[#7fad39] text-white font-bold rounded-md" onClick={handleCheckout}>
+            Checkout
+          </ButtonParrent>
+          <div className="bg-gray-100 w-[555px] h-[300px] p-5 flex flex-col justify-between">
             <div>
               <h3 className="font-bold text-[24px] text-center">Cart Total</h3>
               <div className="flex justify-between mt-10">
@@ -228,9 +254,11 @@ const Cart = () => {
               </div>
             </div>
             <div className="flex justify-center w-full">
-              <button className=" w-[500px] p-3 bg-[#7fad39] text-white font-bold rounded-md">
-                PROCEED TO CHECKOUT
-              </button>
+              <Paypal
+                  amount={totalPrice}
+                  payload={{ userId, cartItems, cartId }}
+                  handleCheckout={handleCheckout}
+                />
             </div>
           </div>
         </div>

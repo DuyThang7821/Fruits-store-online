@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { updateCart } from "../store/user/userSlice";
+import { setCartId, updateCart } from "../store/user/userSlice";
 import Swal from "sweetalert2";
 const { BsHandbagFill, FaHeart, GrView } = icons;
 const FeatureProducts = () => {
@@ -102,21 +102,21 @@ const FeatureProducts = () => {
       let cart = cartResponse.data.cartDetails;
       const productIndex = cart.findIndex((item) => item.product.id === product.id);
       if (cart && productIndex !== -1) {
-        let data = []
-        cart.map((item) =>  data.push({productId: item.product.id, quantity:  item.quantity }))
+        let data = [];
+        cart.map((item) => data.push({ productId: item.product.id, quantity: item.quantity }));
         data[productIndex].quantity += 1;
         await apiUpdateCart({
-            accountId: userId,
-            cartDetails: data
-          });
-          Swal.fire({
-            icon: "success",
-            title: "update product to cart successfully!",
-          });
+          accountId: userId,
+          cartDetails: data
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Update product to cart successfully!",
+        });
       } else {
-        let data = []
-        cart.map((item) => data.push({productId: item.product.id, quantity: item.quantity}))
-        data.push({productId: product.id, quantity: 1})
+        let data = [];
+        cart.map((item) => data.push({ productId: item.product.id, quantity: item.quantity }));
+        data.push({ productId: product.id, quantity: 1 });
         await apiUpdateCart({ accountId: userId, cartDetails: data });
         Swal.fire({
           icon: "success",
@@ -124,6 +124,9 @@ const FeatureProducts = () => {
         });
       }
       const res = await apiGetCartById(userId);
+      const cartId = res.data?.id; 
+      dispatch(setCartId(cartId));
+      localStorage.setItem('cartId', cartId); 
       dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
     } catch (error) {
       if (error.statusCode === 404) {
@@ -133,6 +136,9 @@ const FeatureProducts = () => {
           title: "Add product to cart successfully!",
         });
         const res = await apiGetCartById(userId);
+        const cartId = res.data?.id; 
+        dispatch(setCartId(cartId));
+        localStorage.setItem('cartId', cartId); 
         dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
       } else {
         toast.error("Cannot update cart");
@@ -140,10 +146,6 @@ const FeatureProducts = () => {
       }
     }
   };
-  
-  
-  
-
   const handleProductClick = (productId) => {
     window.scrollTo({
       top: window.innerHeight / 2,
