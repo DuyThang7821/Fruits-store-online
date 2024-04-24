@@ -26,14 +26,14 @@ const Cart = () => {
     const fetchCart = async () => {
       try {
         const cartResponse = await apiGetCartById(userId);
-        const cartId = cartResponse.data?.id; 
-        dispatch(setCartId(cartId))
+        const cartId = cartResponse.data?.id;
+        dispatch(setCartId(cartId));
         if (!cartResponse.data || !cartResponse.data.cartDetails) {
           dispatch(clearCartId());
           return;
         }
       } catch (error) {
-        toast.error("Error fetching cart:", error);
+        console.error("Error fetching cart:", error);
       }
     };
 
@@ -93,22 +93,18 @@ const Cart = () => {
   };
   const handleCheckout = async () => {
     try {
-      const response = await apiCreateOder(cartId);
-      if (response.statusCode === 201) {
-        Swal.fire('Chúc mừng!', 'Bạn đã đặt hàng thành công', 'success').then(() => {
+      await apiCreateOder(cartId);
+      Swal.fire("Chúc mừng!", "Bạn đã đặt hàng thành công", "success").then(
+        () => {
           dispatch(clearCartId());
           localStorage.removeItem("cartItems");
-          navigate('/');
-        });
-      } else {
-        throw new Error("Error creating order");
-      }
+          navigate("/");
+        }
+      );
     } catch (error) {
-      Swal.fire('Oops!', 'Có lỗi xảy ra khi đặt hàng', 'error');
+      Swal.fire("Oops!", "Có lỗi xảy ra khi đặt hàng", "error");
     }
   };
-  
-  
 
   const handleContinueShopping = (e) => {
     e.preventDefault();
@@ -240,7 +236,10 @@ const Cart = () => {
               Continue Shopping
             </ButtonParrent>
           </Link>
-          <ButtonParrent className="p-3 bg-[#7fad39] text-white font-bold rounded-md" onClick={handleCheckout}>
+          <ButtonParrent
+            className="p-3 bg-[#7fad39] text-white font-bold rounded-md"
+            onClick={handleCheckout}
+          >
             Checkout
           </ButtonParrent>
           <div className="bg-gray-100 w-[555px] h-[300px] p-5 flex flex-col justify-between">
@@ -255,10 +254,10 @@ const Cart = () => {
             </div>
             <div className="flex justify-center w-full">
               <Paypal
-                  amount={totalPrice}
-                  payload={{ userId, cartItems, cartId }}
-                  handleCheckout={handleCheckout}
-                />
+                amount={totalPrice}
+                payload={{ userId, cartItems, cartId }}
+                handleCheckout={handleCheckout}
+              />
             </div>
           </div>
         </div>
