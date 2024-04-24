@@ -94,7 +94,7 @@ const Cart = () => {
   const handleCheckout = async () => {
     try {
       await apiCreateOder(cartId);
-      Swal.fire("Chúc mừng!", "Bạn đã đặt hàng thành công", "success").then(
+      Swal.fire("Congratulations!", "You have successfully placed your order", "success").then(
         () => {
           dispatch(clearCartId());
           localStorage.removeItem("cartItems");
@@ -102,7 +102,7 @@ const Cart = () => {
         }
       );
     } catch (error) {
-      Swal.fire("Oops!", "Có lỗi xảy ra khi đặt hàng", "error");
+      Swal.fire("Oops!", "There was an error when ordering", "error");
     }
   };
 
