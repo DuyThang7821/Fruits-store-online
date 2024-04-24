@@ -43,17 +43,15 @@ export const userSlice = createSlice({
         (total, item) => total + item.quantity * (item.product?.price ?? 0),
         0
       );
-      if (!state.cartId && action.payload.cartId) {
-        state.cartId = action.payload.cartId;
-      }
+      state.cartId = action.payload.cartId || state.cartId;
     },
+    
     setCartId: (state, action) => {
       state.cartId = action.payload.cartId;
     },
     clearCartId: (state) => {
       state.cartId = "";
       state.cart = [];
-      localStorage.removeItem("cartItems");
     },
   },
 });

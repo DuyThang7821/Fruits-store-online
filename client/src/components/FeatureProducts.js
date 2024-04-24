@@ -96,7 +96,7 @@ const FeatureProducts = () => {
       });
       return;
     }
-    
+  
     try {
       let cartResponse = await apiGetCartById(userId);
       let cart = cartResponse.data.cartDetails;
@@ -125,8 +125,7 @@ const FeatureProducts = () => {
       }
       const res = await apiGetCartById(userId);
       const cartId = res.data?.id; 
-      dispatch(setCartId(cartId));
-      localStorage.setItem('cartId', cartId); 
+      dispatch(setCartId(cartId)); 
       dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
     } catch (error) {
       if (error.statusCode === 404) {
@@ -138,7 +137,6 @@ const FeatureProducts = () => {
         const res = await apiGetCartById(userId);
         const cartId = res.data?.id; 
         dispatch(setCartId(cartId));
-        localStorage.setItem('cartId', cartId); 
         dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
       } else {
         toast.error("Cannot update cart");
@@ -146,6 +144,7 @@ const FeatureProducts = () => {
       }
     }
   };
+  
   const handleProductClick = (productId) => {
     window.scrollTo({
       top: window.innerHeight / 2,

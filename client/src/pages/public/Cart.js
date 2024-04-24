@@ -9,25 +9,24 @@ import {
 } from "../../components";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCart, clearCartId, setCartId } from "../../store/user/userSlice"; // Import clearCartId action
+import { updateCart, clearCartId, setCartId } from "../../store/user/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import path from "../../ultils/path";
 import { apiCreateOder, apiGetCartById, apiUpdateCart } from "../../apis";
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
 const pageTitle = "Shopping Cart";
 const Cart = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const userId = useSelector((state) => state.user.userId);
-  const cartId = useSelector((state) => state.user.cartId);
+  const cartId = useSelector((state) => state.user.cartId); 
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const cartResponse = await apiGetCartById(userId);
-        const cartId = cartResponse.data?.id;
-        dispatch(setCartId(cartId));
+        const cartId = cartResponse.data?.id; 
+        dispatch(setCartId({ cartId }));
         if (!cartResponse.data || !cartResponse.data.cartDetails) {
           dispatch(clearCartId());
           return;
@@ -36,9 +35,9 @@ const Cart = () => {
         console.error("Error fetching cart:", error);
       }
     };
-
+  
     fetchCart();
-  }, [userId, dispatch]);
+  }, [userId, cartId, dispatch]);
 
   const breadcrumbs = [
     { name: "Home", path: "/" },
@@ -88,7 +87,7 @@ const Cart = () => {
         localStorage.setItem("cartItems", JSON.stringify(response.data.cart));
       }
     } catch (error) {
-      toast.error("Error updating cart on server:", error);
+      console.error("Error updating cart on server:", error);
     }
   };
   const handleCheckout = async () => {
@@ -97,11 +96,11 @@ const Cart = () => {
       Swal.fire("Congratulations!", "You have successfully placed your order", "success").then(
         () => {
           dispatch(clearCartId());
-          localStorage.removeItem("cartItems");
           navigate("/");
         }
       );
     } catch (error) {
+      console.error("Error creating order:", error);
       Swal.fire("Oops!", "There was an error when ordering", "error");
     }
   };

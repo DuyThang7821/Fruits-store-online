@@ -131,7 +131,6 @@ const DetailProducts = () => {
       const res = await apiGetCartById(userId);
       const cartId = res.data?.id; 
       dispatch(setCartId(cartId));
-      localStorage.setItem('cartId', cartId); 
       dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
     } catch (error) {
       if (error.statusCode === 404) {
@@ -143,7 +142,6 @@ const DetailProducts = () => {
         const res = await apiGetCartById(userId);
         const cartId = res.data?.id; 
         dispatch(setCartId(cartId));
-        localStorage.setItem('cartId', cartId); 
         dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
       } else {
         toast.error("Cannot update cart");

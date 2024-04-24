@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { setCartId } from "../../store/user/userSlice"; 
+
 
 const style = { "layout": "vertical" };
 
-const ButtonWrapper = ({ currency, showSpinner, amount, handleCheckout }) => {
+const ButtonWrapper = ({ currency, showSpinner, amount, handleCheckout, cartId }) => { 
   const [{ isPending, options }, dispatch] = usePayPalScriptReducer();
 
   useEffect(() => {
@@ -40,20 +40,17 @@ const ButtonWrapper = ({ currency, showSpinner, amount, handleCheckout }) => {
   );
 }
 
-export default function Paypal({ amount, handleCheckout }) { 
+const Paypal = ({ amount, handleCheckout }) => { 
   const cartId = useSelector((state) => state.user.cartId);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    let localCartId = localStorage.getItem('cartId');
-    if (!cartId && localCartId) {
-      dispatch(setCartId({ cartId: localCartId }));
-    }
-  }, [cartId, dispatch]);
+
   return (
     <div style={{ width: "450px", minHeight: "80px", margin: 'auto', padding: '10px' }}>
       <PayPalScriptProvider options={{ clientId: "test", components: "buttons", currency: "USD" }}>
+        {/* Truyền cartId từ props vào component ButtonWrapper */}
         <ButtonWrapper currency={'USD'} amount={amount} showSpinner={false} cartId={cartId} handleCheckout={handleCheckout} />
       </PayPalScriptProvider>
     </div>
   );
 }
+
+export default Paypal;
