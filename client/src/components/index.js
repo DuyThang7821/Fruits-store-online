@@ -16,6 +16,8 @@ export {default as ButtonParrent} from './button/ButtonParrent';
 export {default as ButtonQuantity} from './button/ButtonQuantity';
 export {default as TabsParrent} from './common/TabsParrent';
 export {default as Paypal} from './common/Paypal';
+export {default as MemberSidebar} from './MemberSidebar'
+export {default as InputForm} from './common/InputForm';
 
 
 

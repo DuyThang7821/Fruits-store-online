@@ -7,6 +7,8 @@ import { logout } from "../store/user/userSlice";
 import { toast } from "react-toastify";
 import { apiLogout } from "../apis/user";
 import Swal from "sweetalert2";
+import path from "../ultils/path";
+import { Link } from "react-router-dom";
 const { MdEmail, FaFacebook, FaLinkedinIn, FaTwitter, FaUserCircle } = icons;
 
 const TopHeader = () => {
@@ -96,11 +98,17 @@ const TopHeader = () => {
                 {isShowOption && (
                   <div
                     onClick={(e) => e.stopPropagation()}
-                    className="rounded-md flex-col flex  absolute top-full  bg-gray-100 border min-w-[150px] text-center"
+                    className="rounded-md flex-col flex z-50  absolute top-full  bg-gray-100 border min-w-[150px] text-center"
                   >
+                    <Link
+                      className="w-full p-2 hover:bg-[#7fad39] hover:text-gray-100 text-black"
+                      to={`/${path.MEMBER}/${path.PERSONAL}`}
+                    >
+                      Profile
+                    </Link>
                     <span
                       onClick={handleLogout}
-                      className="w-full p-2 hover:bg-sky-500 cursor-pointer"
+                      className="w-full p-2 hover:bg-[#7fad39] hover:text-gray-100 cursor-pointer text-black "
                     >
                       Log out
                     </span>

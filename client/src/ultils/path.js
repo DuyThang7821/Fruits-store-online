@@ -8,6 +8,13 @@ const path = {
     PAGES: 'pages',
     CONTACTS: 'contacts',
     PRODUCTS_DETAILS: '/product/:productId',
-    CART: 'cart'
+    CART: 'cart',
+
+    //MEMBER
+    MEMBER: 'member',
+    PERSONAL: 'personal',
+    HISTORY: 'buy-history',
+    CHANGE_PASSWORD: 'changePassword',
+
 }
 export default path

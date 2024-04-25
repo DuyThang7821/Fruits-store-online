@@ -1,4 +1,5 @@
 import path from "./path";
+import icons from "./icons";
 export const navigation = [
   {
     id: 1,
@@ -26,6 +27,30 @@ export const navigation = [
     path: `/${path.CONTACTS}`,
   },
 ];
+const { AiOutlineDashboard, RiBillLine, FaUserCircle } = icons;
+export const memberSidebar = [
+  {
+    id: 1,
+    type: "SINGLE",
+    text: "Profile Information",
+    path: `/${path.MEMBER}/${path.PERSONAL}`,
+    icon: <AiOutlineDashboard size={20} />,
+  },
+  {
+    id: 2,
+    type: "SINGLE",
+    text: "Order History",
+    path: `/${path.MEMBER}/${path.HISTORY}`,
+    icon: <RiBillLine size={20} />,
+  },
+  {
+    id: 3,
+    type: "SINGLE",
+    text: "Change Password",
+    path: `/${path.MEMBER}/${path.CHANGE_PASSWORD}`,
+    icon: <FaUserCircle size={20} />,
+  },
+];
 export const message = {
   firstNameRequired: "First name is required",
   lastNameRequired: "Last name is required",
@@ -37,13 +62,13 @@ export const message = {
   passwordRequired: "Password is required",
   confirmPasswordRequired: "Confirm Password is required",
   addressRequired: "Address is required",
-  passwordLength: "Password needs at least 6 characters",
+  passwordLength: "Password needs at least 6 characters, uppercase, lowercase, numbers, and special characters",
   comparePassword: "Confirm Password do not match",
 };
 
 export const regex = {
   email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-  passwordLength: /^.{6,}$/,
+  passwordLength: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]+)[A-Za-z\d@$!%*?&]{8,}$/,
   regexPhone: /^(0?3[2-9]|0?5[689]|0?7[06-9]|0?8[1-689]|0?9[0-46-9])[0-9]{7}$/,
 };
 
