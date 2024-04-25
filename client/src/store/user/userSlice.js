@@ -15,6 +15,7 @@ export const userSlice = createSlice({
     cart: [],
     totalItems: 0,
     totalPrice: 0,
+    cartId: "", 
   },
   reducers: {
     login: (state, action) => {
@@ -34,14 +35,27 @@ export const userSlice = createSlice({
     },
     updateCart: (state, action) => {
       state.cart = action.payload.cartDetails;
-      state.totalItems = state.cart.reduce((total, item) => total + item.quantity, 0);
-      state.totalPrice = state.cart.reduce((total, item) => total + item.quantity * (item.product?.price ?? 0), 0);
+      state.totalItems = state.cart.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+      state.totalPrice = state.cart.reduce(
+        (total, item) => total + item.quantity * (item.product?.price ?? 0),
+        0
+      );
+      state.cartId = action.payload.cartId || state.cartId;
+    },
+    
+    setCartId: (state, action) => {
+      state.cartId = action.payload.cartId;
     },
     clearCartId: (state) => {
-      localStorage.removeItem("cartItems");
+      state.cartId = "";
+      state.cart = [];
     },
   },
 });
 
-export const { login, logout, updateCart, clearCartId } = userSlice.actions;
+export const { login, logout, updateCart, setCartId, clearCartId } = userSlice.actions;
+
 export default userSlice.reducer;

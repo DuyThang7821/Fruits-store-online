@@ -4,36 +4,39 @@ import {
   BreadCrumb,
   ButtonParrent,
   ButtonQuantity,
+  Paypal,
   Sidebar,
 } from "../../components";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCart, clearCartId } from "../../store/user/userSlice";
+import { updateCart, clearCartId, setCartId } from "../../store/user/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import path from "../../ultils/path";
-import { apiGetCartById, apiUpdateCart } from "../../apis";
-import { toast } from "react-toastify";
+import { apiCreateOder, apiGetCartById, apiUpdateCart } from "../../apis";
+import Swal from "sweetalert2";
 const pageTitle = "Shopping Cart";
 const Cart = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const userId = useSelector((state) => state.user.userId);
+  const cartId = useSelector((state) => state.user.cartId); 
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const cartResponse = await apiGetCartById(userId);
+        const cartId = cartResponse.data?.id; 
+        dispatch(setCartId({ cartId }));
         if (!cartResponse.data || !cartResponse.data.cartDetails) {
           dispatch(clearCartId());
           return;
         }
       } catch (error) {
-        toast.error("Error fetching cart:");
       }
     };
-
+  
     fetchCart();
-  }, [userId, dispatch]);
+  }, [userId, cartId, dispatch]);
 
   const breadcrumbs = [
     { name: "Home", path: "/" },
@@ -80,10 +83,23 @@ const Cart = () => {
           cartDetails: updateData,
         });
         dispatch(updateCart({ cartDetails: response.data.cart }));
-        localStorage.setItem("cartItems", JSON.stringify(response.data.cart));
       }
     } catch (error) {
       console.error("Error updating cart on server:", error);
+    }
+  };
+  const handleCheckout = async () => {
+    try {
+      await apiCreateOder(cartId);
+      Swal.fire("Congratulations!", "You have successfully placed your order", "success").then(
+        () => {
+          dispatch(clearCartId());
+          navigate("/");
+        }
+      );
+    } catch (error) {
+      console.error("Error creating order:", error);
+      Swal.fire("Oops!", "There was an error when ordering", "error");
     }
   };
 
@@ -217,7 +233,13 @@ const Cart = () => {
               Continue Shopping
             </ButtonParrent>
           </Link>
-          <div className="bg-gray-100 w-[555px] h-[256px] p-5 flex flex-col justify-between">
+          <ButtonParrent
+            className="p-3 bg-[#7fad39] text-white font-bold rounded-md"
+            onClick={handleCheckout}
+          >
+            Checkout
+          </ButtonParrent>
+          <div className="bg-gray-100 w-[555px] h-[300px] p-5 flex flex-col justify-between">
             <div>
               <h3 className="font-bold text-[24px] text-center">Cart Total</h3>
               <div className="flex justify-between mt-10">
@@ -228,9 +250,11 @@ const Cart = () => {
               </div>
             </div>
             <div className="flex justify-center w-full">
-              <button className=" w-[500px] p-3 bg-[#7fad39] text-white font-bold rounded-md">
-                PROCEED TO CHECKOUT
-              </button>
+              <Paypal
+                amount={totalPrice}
+                payload={{ userId, cartItems, cartId }}
+                handleCheckout={handleCheckout}
+              />
             </div>
           </div>
         </div>
