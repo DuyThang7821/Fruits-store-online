@@ -1,5 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { setAuthToken } from "../../axios";
+import { apiUpdatePassword } from "../../apis";
+
+export const updatePasswordThunk = createAsyncThunk(
+  'user/updatePassword',
+  async ({ accountId, currentPassword, newPassword, confirmNewPassword }, thunkAPI) => {
+    try {
+      const response = await apiUpdatePassword(accountId, { currentPassword, newPassword, confirmNewPassword });
+      return response.data; 
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response ? error.response.data : 'An error occurred');
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -53,6 +66,15 @@ export const userSlice = createSlice({
       state.cartId = "";
       state.cart = [];
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updatePasswordThunk.fulfilled, (state, action) => {
+        state.message = "Password updated successfully.";
+      })
+      .addCase(updatePasswordThunk.rejected, (state, action) => {
+        state.message = action.payload || "Failed to update password.";
+      });
   },
 });
 

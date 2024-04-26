@@ -14,3 +14,10 @@ export const apiUpdateCart = (data) => axios.put('/api/v1/carts/update-cart', da
 
 export const apiCreateOder = (cartId) => axios.post(`/api/v1/orders/order-products/${cartId}/cart-id`)
 
+export const apiGetAccount = () => axios.get('/api/v1/accounts');
+
+export const apiGetAccountById = (accountId) => axios.get(`/api/v1/accounts/get-by-id/${accountId}/account-id`);
+
+export const apiUpdateAccount = (accountId, data) => axios.put(`/api/v1/accounts/update-account/${accountId}/account-id`, data);
+
+export const apiUpdatePassword = (accountId, data) => axios.put(`/api/v1/accounts/change-password/${accountId}/account-id`, data); 

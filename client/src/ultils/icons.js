@@ -1,4 +1,4 @@
-import { RiPhoneFill } from 'react-icons/ri';
+import { RiPhoneFill, RiBillLine } from 'react-icons/ri';
 import {MdEmail, MdNavigateNext } from 'react-icons/md';
 import {BsHandbagFill} from 'react-icons/bs';
 import {FaUserCircle, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
@@ -7,6 +7,7 @@ import { IoMdMenu } from "react-icons/io";
 import { GrFormPrevious, GrView } from "react-icons/gr";
 import { FaFacebook } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
+import {AiOutlineDashboard} from 'react-icons/ai'
 const icons = {
     RiPhoneFill,
     MdEmail,
@@ -20,6 +21,8 @@ const icons = {
     FaTwitter,
     FaLinkedinIn,
     GrView,
-    IoLogOut
+    IoLogOut,
+    AiOutlineDashboard,
+    RiBillLine,
 }
 export default icons
