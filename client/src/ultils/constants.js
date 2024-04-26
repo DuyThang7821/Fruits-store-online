@@ -75,6 +75,7 @@ export const regex = {
 export const product = {
   productLimit: 8,
   productLimitDetail: 4,
+  orderHistoryLimit: 8,
 };
 export const productInfoTabs = [
   {

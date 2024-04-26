@@ -21,3 +21,5 @@ export const apiGetAccountById = (accountId) => axios.get(`/api/v1/accounts/get-
 export const apiUpdateAccount = (accountId, data) => axios.put(`/api/v1/accounts/update-account/${accountId}/account-id`, data);
 
 export const apiUpdatePassword = (accountId, data) => axios.put(`/api/v1/accounts/change-password/${accountId}/account-id`, data); 
+
+export const apiGetOrderByAccount = (accountId) => axios.get(`/api/v1/orders/get-by-account-id/${accountId}/account-id`);
