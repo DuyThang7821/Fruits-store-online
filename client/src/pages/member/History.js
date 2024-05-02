@@ -4,7 +4,7 @@ import { apiGetOrderByAccount } from "../../apis/user";
 import { setOrders } from "../../store/user/userSlice";
 import PaginationPage from "../../components/pagination/PaginationPage";
 import { product } from "../../ultils/constants";
-
+import moment from "moment";
 const History = () => {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.userId);
@@ -17,8 +17,11 @@ const History = () => {
     const fetchOrders = async () => {
       try {
         const response = await apiGetOrderByAccount(userId);
-        dispatch(setOrders(response.data));
-        const totalOrders = response.data.length;
+        const sortedOrders = response.data.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        dispatch(setOrders(sortedOrders));
+        const totalOrders = sortedOrders.length;
         setTotalPages(Math.ceil(totalOrders / pageSize));
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -51,6 +54,7 @@ const History = () => {
             <th className="py-2 border-r-2">Price</th>
             <th className="py-2 border-r-2">Quantity</th>
             <th className="py-2 border-r-2">Total</th>
+            <th className="py-2 border-r-2">Ordered day</th>
           </tr>
         </thead>
 
@@ -91,6 +95,10 @@ const History = () => {
                     {order.total+"💲"}
                   </td>
                 )}
+
+                <td className="text-center py-2">
+                {moment(order.createdAt)?.format("DD/MM/YYYY")}
+              </td>
               </tr>
             ))
           )}
