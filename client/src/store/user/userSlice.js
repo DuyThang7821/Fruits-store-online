@@ -1,6 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { setAuthToken } from "../../axios";
-import { apiUpdatePassword } from "../../apis";
+import { apiUpdatePassword, apiGetOrderByAccount } from "../../apis";
+
+
+export const setOrders = createAction('user/setOrders');
 
 export const updatePasswordThunk = createAsyncThunk(
   'user/updatePassword',
@@ -8,6 +11,18 @@ export const updatePasswordThunk = createAsyncThunk(
     try {
       const response = await apiUpdatePassword(accountId, { currentPassword, newPassword, confirmNewPassword });
       return response.data; 
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response ? error.response.data : 'An error occurred');
+    }
+  }
+);
+
+export const fetchOrdersThunk = createAsyncThunk(
+  'user/fetchOrders',
+  async (accountId, thunkAPI) => {
+    try {
+      const response = await apiGetOrderByAccount(accountId);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response ? error.response.data : 'An error occurred');
     }
@@ -28,7 +43,8 @@ export const userSlice = createSlice({
     cart: [],
     totalItems: 0,
     totalPrice: 0,
-    cartId: "", 
+    cartId: "",
+    orders: [], 
   },
   reducers: {
     login: (state, action) => {
@@ -58,13 +74,15 @@ export const userSlice = createSlice({
       );
       state.cartId = action.payload.cartId || state.cartId;
     },
-    
     setCartId: (state, action) => {
       state.cartId = action.payload.cartId;
     },
     clearCartId: (state) => {
       state.cartId = "";
       state.cart = [];
+    },
+    setOrders: (state, action) => {
+      state.orders = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -74,6 +92,12 @@ export const userSlice = createSlice({
       })
       .addCase(updatePasswordThunk.rejected, (state, action) => {
         state.message = action.payload || "Failed to update password.";
+      })
+      .addCase(fetchOrdersThunk.fulfilled, (state, action) => {
+        state.orders = action.payload; 
+      })
+      .addCase(fetchOrdersThunk.rejected, (state, action) => {
+        console.error("Error fetching orders:", action.payload);
       });
   },
 });
