@@ -97,7 +97,7 @@ const History = () => {
                 )}
 
                 <td className="text-center py-2">
-                {moment(order.createdAt)?.format("DD/MM/YYYY")}
+                {moment(order.createdAt)?.format("DD/MM/YYYY / HH:mm")}
               </td>
               </tr>
             ))
