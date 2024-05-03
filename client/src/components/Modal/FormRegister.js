@@ -65,10 +65,8 @@ const FormRegister = ({
           handleRegistrationSuccess(); 
         })
         .catch((error) => {
-          if (error.statusCode === 409) {
-            toast.error(`Account has already been used by email: ${data.email}`);
-          }
-        });        
+          toast.error(error.message);
+        });
     }
   };
   const handleGotoLoginClick = () => {
