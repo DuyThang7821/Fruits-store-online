@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import icons from "../ultils/icons";
-import { apiGetProductById, apigetProducts } from "../apis/products";
+import { apigetProducts } from "../apis/products";
 import {
   apiAddCart,
   apiGetCartById,
@@ -199,34 +199,40 @@ const FeatureProducts = () => {
       </div>
 
       <div className="mt-8 flex flex-auto flex-wrap cursor-pointer">
-        {currentProducts.map((product) => (
-          <div
-            key={product.id}
-            onClick={() => handleProductClick(product.id)}
-            className="flex flex-col items-center justify-center p-3 relative group"
-          >
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="w-[270px] h-[270px] object-cover"
-            />
-            <div className="absolute top-[50px] left-2 w-full h-full flex justify-center items-center opacity-0 group-hover:opacity-100 hover:animate-slide-top">
-              <GrView className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
-              <FaHeart className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
-              <BsHandbagFill
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddToCart(product);
-                }}
-                className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
+        {currentProducts.length > 0 ? (
+          currentProducts.map((product) => (
+            <div
+              key={product.id}
+              onClick={() => handleProductClick(product.id)}
+              className="flex flex-col items-center justify-center p-3 relative group"
+            >
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="w-[270px] h-[270px] object-cover"
               />
+              <div className="absolute top-[50px] left-2 w-full h-full flex justify-center items-center opacity-0 group-hover:opacity-100 hover:animate-slide-top">
+                <GrView className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
+                <FaHeart className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full  border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer" />
+                <BsHandbagFill
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                  }}
+                  className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
+                />
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="mt-2">{product.name}</span>
+                <h5 className="mt-2 font-bold text-lg">${product.price}</h5>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <span className="mt-2">{product.name}</span>
-              <h5 className="mt-2 font-bold text-lg">${product.price}</h5>
-            </div>
+          ))
+        ) : (
+          <div className="w-full text-center py-4 text-[24px] font-bold">
+            This category does not have products.
           </div>
-        ))}
+        )}
       </div>
       <div className="mt-20 w-full">
         {showPagination && (

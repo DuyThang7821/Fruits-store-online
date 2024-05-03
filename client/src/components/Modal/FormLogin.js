@@ -8,8 +8,11 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import ModalWrapper from "../common/ModalWrapper";
 import CloseIcon from "@mui/icons-material/Close";
-import './FormLogin.css'
-const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
+const FormLogin = ({
+  show,
+  handleCloseModal,
+  handleOpenRegisterModal,
+}) => {
   const dispatch = useDispatch();
   const [data, setData] = useState({
     email: "",
@@ -26,6 +29,7 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
   const resetData = () => {
     setData({ email: "", password: "" });
   };
+
   const handleLoginClick = () => {
     setInvalidFields([]);
     const isValid = validate(data, setInvalidFields, true);
@@ -37,7 +41,7 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
               login({
                 isLoggedIn: true,
                 email: res.data.account.email,
-                userId: res.data.account.id, 
+                userId: res.data.account.id,
                 tokens: {
                   accessToken: res.data.tokens.accessToken,
                   refreshToken: res.data.tokens.refreshToken,
@@ -46,15 +50,15 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
             );
 
             handleCloseModal();
-            resetData(data);
+            resetData();
 
             Swal.fire({
               icon: "success",
               title: "Logged in successfully!",
               text: `Logged in as ${res.data.account.email}`,
               customClass: {
-                popup: 'swal-custom-zindex' 
-              }
+                popup: "swal-custom-zindex",
+              },
             });
           }
         })
@@ -63,12 +67,19 @@ const FormLogin = ({ show, handleCloseModal, handleOpenRegisterModal }) => {
         });
     }
   };
+
   const handleCreateAccountClick = () => {
     handleCloseModal();
     handleOpenRegisterModal();
   };
+
   const handleCloseButtonClick = () => {
     handleCloseModal();
+    resetErrors();
+  };
+
+  const resetErrors = () => {
+    setInvalidFields([]);
   };
   return (
     <div>

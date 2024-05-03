@@ -92,13 +92,18 @@ const History = () => {
                     className="text-center py-2 border-r-2"
                     rowSpan={order.orderDetailDTOs.length}
                   >
-                    {order.total+"💲"}
+                    {order.total + "💲"}
                   </td>
                 )}
 
-                <td className="text-center py-2">
-                {moment(order.createdAt)?.format("DD/MM/YYYY / HH:mm")}
-              </td>
+                {detailIndex === 0 && (
+                  <td
+                    className="text-center py-2 border-r-2"
+                    rowSpan={order.orderDetailDTOs.length}
+                  >
+                    {moment(order.createdAt)?.format("DD/MM/YYYY / HH:mm")}
+                  </td>
+                )}
               </tr>
             ))
           )}
