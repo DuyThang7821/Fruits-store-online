@@ -66,14 +66,11 @@ const FormRegister = ({
         })
         .catch((error) => {
           if (error.statusCode === 409) {
-            toast.error('Your registered email please select another email');
+            toast.error(`Account has already been used by email: ${data.email}`);
           }
-        });
+        });        
     }
   };
-  
-  
-
   const handleGotoLoginClick = () => {
     handleCloseModal();
     handleOpenLoginModal();

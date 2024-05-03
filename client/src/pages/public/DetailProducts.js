@@ -122,7 +122,7 @@ const DetailProducts = () => {
         });
         Swal.fire({
           icon: "success",
-          title: "update product to cart successfully!",
+          title: "Update product to cart successfully!",
         });
       } else {
         let data = [];
