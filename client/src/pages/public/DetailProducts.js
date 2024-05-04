@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { RiPhoneFill } from "react-icons/ri";
@@ -42,7 +44,7 @@ const DetailProducts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
-  const cartItems = useSelector((state) => state.user.cart);
+
   useEffect(() => {
     const fetchProductDetails = async (id) => {
       try {
@@ -101,27 +103,33 @@ const DetailProducts = () => {
       });
       return;
     }
-    
+
     try {
       let cartResponse = await apiGetCartById(userId);
       let cart = cartResponse.data.cartDetails;
-      const productIndex = cart.findIndex((item) => item.product.id === relatedProduct.id);
+      const productIndex = cart.findIndex(
+        (item) => item.product.id === relatedProduct.id
+      );
       if (cart && productIndex !== -1) {
-        let data = []
-        cart.map((item) =>  data.push({productId: item.product.id, quantity:  item.quantity }))
+        let data = [];
+        cart.map((item) =>
+          data.push({ productId: item.product.id, quantity: item.quantity })
+        );
         data[productIndex].quantity += quantity;
         await apiUpdateCart({
-            accountId: userId,
-            cartDetails: data
-          });
-          Swal.fire({
-            icon: "success",
-            title: "update product to cart successfully!",
-          });
+          accountId: userId,
+          cartDetails: data,
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Update product to cart successfully!",
+        });
       } else {
-        let data = []
-        cart.map((item) => data.push({productId: item.product.id, quantity: item.quantity}))
-        data.push({productId: relatedProduct.id, quantity: quantity})
+        let data = [];
+        cart.map((item) =>
+          data.push({ productId: item.product.id, quantity: item.quantity })
+        );
+        data.push({ productId: relatedProduct.id, quantity: quantity });
         await apiUpdateCart({ accountId: userId, cartDetails: data });
         Swal.fire({
           icon: "success",
@@ -129,49 +137,31 @@ const DetailProducts = () => {
         });
       }
       const res = await apiGetCartById(userId);
-      const cartId = res.data?.id; 
+      const cartId = res.data?.id;
       dispatch(setCartId(cartId));
       dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
+      setQuantity(1);
     } catch (error) {
       if (error.statusCode === 404) {
-        await apiAddCart({ accountId: userId, cartDetails: [{ productId: relatedProduct.id, quantity: quantity }] });
+        await apiAddCart({
+          accountId: userId,
+          cartDetails: [{ productId: relatedProduct.id, quantity: quantity }],
+        });
         Swal.fire({
           icon: "success",
           title: "Add product to cart successfully!",
         });
         const res = await apiGetCartById(userId);
-        const cartId = res.data?.id; 
+        const cartId = res.data?.id;
         dispatch(setCartId(cartId));
         dispatch(updateCart({ cartDetails: res.data?.cartDetails }));
+        setQuantity(1);
       } else {
         toast.error("Cannot update cart");
-        console.error("Error updating cart:", error);
       }
     }
   };
 
-  const updateCartOnServer = async (cartDetails) => {
-    try {
-      const updateData = cartDetails
-        .map((detail) => ({
-          productId: detail.product?.id,
-          quantity: detail.quantity,
-          accountId: userId,
-        }))
-        .filter((detail) => detail.productId);
-
-      if (updateData.length > 0) {
-        const response = await apiUpdateCart({
-          accountId: userId,
-          cartDetails: updateData,
-        });
-        dispatch(updateCart({ cartDetails: response.data.cart }));
-        localStorage.setItem("cartItems", JSON.stringify(response.data.cart));
-      }
-    } catch (error) {
-      console.error("Error updating cart on server:", error);
-    }
-  };
   const handleRelatedProductClick = (relatedProductId) => {
     window.scrollTo({
       top: window.innerHeight / 2,
@@ -229,18 +219,26 @@ const DetailProducts = () => {
             className="w-[555px] h-[575px]"
           />
           <div className="w-[458px] mx-10 mt-5">
-            <Slider className="image-slider" {...settings}>
-              {productDetails?.images.map((image, index) => (
-                <div key={index} className="px-2">
-                  <img
-                    onClick={() => handleClickThumbnail(image)}
-                    src={image}
-                    alt={`Product Image ${index}`}
-                    className="cursor-pointer border h-[120px] w-[300px] object-cover outline-none"
-                  />
-                </div>
-              ))}
-            </Slider>
+            {productDetails?.images.length > 1 ? (
+              <Slider className="image-slider" {...settings}>
+                {productDetails?.images.map((image, index) => (
+                  <div key={index} className="px-2">
+                    <img
+                      onClick={() => handleClickThumbnail(image)}
+                      src={image}
+                      alt={`Product Image ${index}`}
+                      className="cursor-pointer border h-[120px] w-[200px] object-cover outline-none"
+                    />
+                  </div>
+                ))}
+              </Slider>
+            ) : (
+              <img
+                src={productDetails?.images[0]}
+                alt={`Product Image 0`}
+                className="cursor-pointer border h-[120px] w-[100px] object-cover outline-none"
+              />
+            )}
           </div>
         </div>
         <div className="w-[50%]">
@@ -335,7 +333,7 @@ const DetailProducts = () => {
                   <BsHandbagFill
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleAddToCart(relatedProduct,1);
+                      handleAddToCart(relatedProduct, 1);
                     }}
                     className="m-1 text-black hover:text-white hover:bg-[#7fad39] bg-white rounded-full border-black mr-5 w-10 h-10 p-3 shadow-md hover:shadow-none cursor-pointer"
                   />

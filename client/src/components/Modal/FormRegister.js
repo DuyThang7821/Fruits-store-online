@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import { validate } from "../../ultils/helpers";
-import { apiRegister} from "../../apis/user";
+import { apiRegister } from "../../apis/user";
 import { toast } from "react-toastify";
 import { message } from "../../ultils/constants";
 import CloseIcon from "@mui/icons-material/Close";
 import ModalWrapper from "../common/ModalWrapper";
-const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
+const FormRegister = ({
+  show,
+  handleOpenLoginModal,
+  handleCloseModal,
+  handleRegistrationSuccess,
+}) => {
   const [invalidFields, setInvalidFields] = useState([]);
   const [data, setData] = useState({
     firstName: "",
@@ -26,6 +31,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
     setData({ ...data, [name]: value });
     setInvalidFields((prev) => prev.filter((field) => field.name !== name));
   };
+
   const resetData = () => {
     setData({
       email: "",
@@ -39,6 +45,7 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
       isActive: true,
     });
   };
+
   const handleRegisterClick = () => {
     setInvalidFields([]);
     if (data.password !== data.confirmPassword) {
@@ -54,23 +61,26 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
       apiRegister(data)
         .then(() => {
           toast.success("Register successful");
-          resetData(data);
+          resetData();
+          handleRegistrationSuccess(); 
         })
         .catch((error) => {
-          toast.error(
-            "Registration Error",
-            error.response ? error.response.data.message : "Unknown error"
-          );
+          toast.error(error.message);
         });
     }
   };
   const handleGotoLoginClick = () => {
-    handleCloseModal(); 
-    handleOpenLoginModal(); 
+    handleCloseModal();
+    handleOpenLoginModal();
   };
 
   const handleCloseButtonClick = () => {
     handleCloseModal();
+    resetErrors();
+  };
+
+  const resetErrors = () => {
+    setInvalidFields([]);
   };
   return (
     <div>
@@ -95,13 +105,18 @@ const FormRegister = ({ show, handleOpenLoginModal, handleCloseModal }) => {
             alignItems: "center",
           }}
         >
-        <CloseIcon
-          sx={{ position: "absolute", top: 10, right: 10, cursor: "pointer",fontSize: "20px", color:"#7fad39" }}
-          onClick={handleCloseButtonClick} 
-        />
-          <span
-            className="text-[#7fad39] font-bold text-4xl mt-10"
-          >
+          <CloseIcon
+            sx={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              cursor: "pointer",
+              fontSize: "20px",
+              color: "#7fad39",
+            }}
+            onClick={handleCloseButtonClick}
+          />
+          <span className="text-[#7fad39] font-bold text-4xl mt-10">
             Register
           </span>
 

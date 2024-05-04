@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InputForm from "../../components/common/InputForm";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { apiGetAccountById, apiUpdateAccount } from "../../apis";
 import { toast } from "react-toastify";
 import { ButtonParrent } from "../../components";
@@ -14,7 +14,6 @@ const Personal = () => {
     handleSubmit,
     reset,
   } = useForm();
-  const dispatch = useDispatch();
   const { userId, isLoggedIn } = useSelector((state) => state.user);
   const [userData, setUserData] = useState(null);
 

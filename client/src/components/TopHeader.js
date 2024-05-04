@@ -27,9 +27,13 @@ const TopHeader = () => {
 
   const handleCloseRegisterModal = () => {
     setShowRegisterModal(false);
-    setShowLoginModal(true);
+    setShowLoginModal(false);
   };
 
+  const handleRegistrationSuccess = () => {
+    handleCloseRegisterModal(); 
+    handleOpenLoginModal(); 
+  };
   useEffect(() => {
     const handleClickoutOptions = (e) => {
       const profile = document.getElementById("profile");
@@ -141,6 +145,7 @@ const TopHeader = () => {
               show={showRegisterModal}
               handleCloseModal={handleCloseRegisterModal}
               handleOpenLoginModal={handleOpenLoginModal}
+              handleRegistrationSuccess={handleRegistrationSuccess}
             />
           </div>
         </div>
